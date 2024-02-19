@@ -1,0 +1,41 @@
+﻿@page
+@model soft20181_starter.Pages.ContactModel
+@{
+}
+
+<div class="contact-form">
+    <h2 class="header">Leave a Message</h2>
+
+    <div class="success">Thank you <span>#Name</span>. We will be in touch shortly</div>
+
+    <div>
+        <form method="post">
+
+            <div class="form-element">
+                <input asp-for="@Model.ContactInfo.Email" type="text" placeholder="Email" />
+                <span asp-validation-for="@Model.ContactInfo.Email"></span>
+            </div>
+
+            <div class="form-element">
+                <input asp-for="@Model.ContactInfo.Name" type="text" placeholder="Name" />
+                <span asp-validation-for="@Model.ContactInfo.Name"></span>
+            </div>
+
+            <div class="form-element">
+                <input asp-for="@Model.ContactInfo.Phone" type="text" placeholder="Phone" />
+                <span asp-validation-for="@Model.ContactInfo.Phone"></span>
+            </div>
+
+            <div class="form-element">
+                <textarea asp-for="@Model.ContactInfo.Message" placeholder="Message"></textarea>
+                <span asp-validation-for="@Model.ContactInfo.Message"></span>
+            </div>
+
+            
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</div>
+
+
+

@@ -1,0 +1,67 @@
+/* Write your CSS here*/
+
+.contact-form {
+  width: 600px;
+  margin: 0 auto;
+  background-color: #fcfcfc;
+  padding: 20px 50px 40px;
+  border: 1px solid #eee;
+  font-family: sans-serif;
+}
+
+.contact-form * {
+  box-sizing: border-box;
+}
+
+.contact-form h2 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+    .contact-form .success {
+        border: 1px solid green;
+        padding: 10px;
+        text-align: center;
+        background: #d7e6d7;
+        margin: 15px 0 30px 0;
+    }
+
+        .contact-form .success span {
+            font-weight: bold;
+        }
+
+        .contact-form .form-element {
+            margin-bottom: 15px;
+        }
+
+    .contact-form .form-element span {
+        color: red;
+        font-size: 0.8em;
+        padding-left: 5px;
+    }
+
+.contact-form input[type="text"], .contact-form textarea {
+    display: block;
+    height: 32px;
+    padding: 6px 16px;
+    width: 100%;
+    border: none;
+    background-color: #f3f3f3;
+}
+
+.contact-form textarea {
+    min-height: 140px;
+}
+ 
+
+.contact-form button[type="submit"] {
+  display: block;
+  margin: 20px auto 0;
+  width: 150px;
+  height: 40px;
+  border-radius: 8px;
+  border: none;
+  color: #eee;
+  font-weight: 700;
+  background: #207cca;
+}
