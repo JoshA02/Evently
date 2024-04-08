@@ -1,0 +1,17 @@
+.main-container > h1 {
+    margin-bottom: 0px;
+}
+.main-container > p {
+    margin-top: 8px;
+}
+.options.page {
+    flex-direction: column;
+    display: flex;
+    flex-wrap: wrap;
+}
+.options.page > .option-category {
+    margin: 0;
+}
+.options.page > .option-category > h3 {
+    margin-bottom: 8px;
+}

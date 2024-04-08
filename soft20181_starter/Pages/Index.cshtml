@@ -1,7 +1,21 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Evently | Home";
 }
 
-<h1>Index Page</h1>
+@section Styles {
+    <link rel="stylesheet" href="~/css/index.css" />
+}
+
+<h1>The ultimate platform for finding all sorts of events</h1>
+    <h3>Whether you're looking to develop new skills, network with industry professionals, or just find something fun, we have it all!</h3>    
+    <div id="latest-events" class="events-container">
+      <h2>Latest Events</h2>
+      <div class="event-list"></div>
+    </div>
+
+    <div id="cheapest-events" class="events-container">
+      <h2>Cheapest Events</h2>
+      <div class="event-list"></div>
+    </div>

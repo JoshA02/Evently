@@ -1,0 +1,60 @@
+@page
+@model soft20181_starter.Pages.Appearance
+
+@{
+  ViewData["Title"] = "Evently | Appearance";
+}
+
+@section Styles {
+  <link rel="stylesheet" href="~/css/Appearance.css" />
+}
+
+<h1>Personalisation</h1>
+<p>Customise EVENTLY© to your liking!</p>
+<section class="options page">
+  <div class="option-category">
+    <h3>Font Size</h3>
+    <div class="option">
+      <input type="radio" name="font-size" id="small-page">
+      <label for="small-page">Small</label>
+    </div>
+    <div class="option">
+      <input type="radio" name="font-size" id="medium-page">
+      <label for="medium-page">Medium</label>
+    </div>
+    <div class="option">
+      <input type="radio" name="font-size" id="large-page">
+      <label for="large-page">Large</label>
+    </div>
+  </div>
+  <div class="option-category">
+    <h3>Colour Scheme</h3>
+    <div class="option">
+      <input type="radio" name="colour-scheme" id="light-page">
+      <label for="light-page">Light</label>
+    </div>
+    <div class="option">
+      <input type="radio" name="colour-scheme" id="dark-page">
+      <label for="dark-page">Dark</label>
+    </div>
+    <div class="option">
+      <input type="radio" name="colour-scheme" id="system-page">
+      <label for="system-page">System</label>
+    </div>
+  </div>
+  <div class="option-category">
+    <h3>Font Family</h3>
+    <div class="option">
+      <input type="radio" name="font-family" id="font-1-page">
+      <label for="font-1-page">Verdana</label>
+    </div>
+    <div class="option">
+      <input type="radio" name="font-family" id="default-page">
+      <label for="default-page">Default</label>
+    </div>
+    <div class="option">
+      <input type="radio" name="font-family" id="font-2-page">
+      <label for="font-2-page">Times New Roman</label>
+    </div>
+  </div>
+</section>

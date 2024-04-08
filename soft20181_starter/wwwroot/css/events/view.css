@@ -1,0 +1,230 @@
+.main-loader {
+    display: none;
+    padding: 20% 0;
+    align-self: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.host {
+    display: flex;
+    margin: 0.4em 0 0;
+}
+.host > * {
+    margin: 0;
+}
+.host-name {
+    font-weight: bold;
+}
+.divider,.divider.horizontal {
+    margin-top: 1.4em;
+    margin-bottom: 1.8em;
+}
+.divider.vertical {
+    margin-left: 0;
+    margin-right: 0;
+}
+#verification-checkmark {
+    width: var(--font-size-body);
+    aspect-ratio: 1;
+    margin-left: 3px;
+    display: none;
+}
+
+.main-container {
+    margin: 0 25vw;
+}
+
+.event-container {
+    display: flex;
+}
+.event-media-column {
+    flex: 0.45;
+    display: flex;
+    flex-direction: column;
+    margin-right: 12px;
+}
+.event-media-container {
+    width: 100%; /* to prevent the source image from stretching the img element */
+    aspect-ratio: 1.5;
+    border-radius: 4px;
+    object-fit: cover;
+    box-shadow: 0 0 10px var(--shadow);
+    overflow: hidden;
+    display: flex;
+    position: relative;
+}
+.event-media-container.mobile {
+    display: none;
+}
+.navigate-button {
+    position: absolute;
+    align-self: center;
+    color: var(--white-default);
+    font-size: var(--font-size-heading);
+    padding: 10px;
+    background-color: var(--shadow);
+}
+#prev.navigate-button {
+    left: 0;
+    border-radius: 0 20px 20px 0;
+    padding-left: 2px;
+}
+#next.navigate-button {
+    right: 0;
+    border-radius: 20px 0 0 20px;
+    padding-right: 2px;
+}
+.event-media {
+    width: 100%; /* to prevent the source image from stretching the img element */
+    aspect-ratio: 1.5;
+    border-radius: 4px;
+    object-fit: cover;
+    position: absolute;
+}
+.event-details {
+    flex: 0.55;
+    margin-left: 12px;
+    display: flex;
+    flex-direction: column;
+}
+.event-details > .divider {
+    margin-top: 4px;
+    margin-bottom: 12px;
+}
+.event-stats {
+    margin: 0 0 6px;
+}
+.event-stat {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2px;
+}
+.event-stat > span {
+    margin-right: 4px;
+}
+#seats-filled-icon.almost-full {
+    color: var(--urgent);
+}
+.event-details > h2:first-of-type {
+    margin: 0 0 8px;
+}
+.event-description {
+    margin: 0;
+}
+
+.booking-form-container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 12px;
+}
+.booking-form-container > section > h2, .booking-form-container > section > p {
+    margin: 0 0 4px;
+}
+.booking-form-container > section > p {
+    color: var(--text-light);
+}
+.booking-form-container > section {
+    margin-bottom: 16px;
+}
+.booking-form-description.full {
+    color: var(--urgent);
+    font-weight: var(--font-weight-tooltip);
+}
+#booking-form > div > input {
+    margin-bottom: 12px;
+}
+#booking-form > .form-input:last-of-type > input {
+    margin-bottom: 0;
+}
+.booking-term {
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+}
+.booking-term > input {
+    margin-right: 8px;
+}
+.booking-term > label {
+    font-size: var(--font-size-tooltip);
+    font-weight: var(--font-weight-tooltip);
+    color: var(--text-light);
+}
+#booking-form > .divider {
+    margin-top: 4px;
+    margin-bottom: 12px;
+}
+.total-book {
+    display: flex;
+    margin: 0;
+    align-items: center;
+    justify-content: space-between;
+}
+.event-price {
+    margin: 0;
+    display: flex; /* to align the asterisk vertically */
+}
+.book-button {
+    display: flex;
+    align-items: center;
+    border: none;
+    background-color: transparent;
+    font-size: var(--font-size-subheading);
+    color: var(--accent);
+    font-weight: bolder;
+    cursor: pointer;
+    padding: 0;
+}
+.book-button > span {
+    font-size: var(--font-size-heading);
+    color: var(--accent);
+    font-weight: bolder;
+    padding-bottom: 3px;
+}
+
+.event-list-title{
+    margin: 72px 0 0;
+}
+.event-list {
+    margin-bottom: 28px;
+}
+
+
+@media screen and (max-width: 1800px) {
+    .main-container {
+        margin: 0 12vw;
+    }
+}
+@media screen and (max-width: 1200px) {
+    .main-container {
+        margin: 0 6vw;
+    }
+}
+@media screen and (max-width: 800px) {
+    .event-container {
+        flex-direction: column-reverse;
+    }
+    .event-container > .divider.vertical {
+        display: none;
+    }
+    .event-details {
+        margin: 12px 0;
+    }
+    .event-media-container.desktop {
+        display: none;
+    }
+    .event-media-container.mobile {
+        display: flex;
+    }
+    .event-details > .divider {
+        display: none;
+    }
+}
+@media screen and (max-width: 400px) {
+    .main-container {
+        margin: 2vw;
+    }
+}
+#booking-form.disabled > div {
+    opacity: 0.4;
+}

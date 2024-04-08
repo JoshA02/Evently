@@ -10,7 +10,7 @@ namespace soft20181_starter.Models
             
         }
 
-        public DbSet<Contact> Contacts { get; set; }
+        // public DbSet<Contact> Contacts { get; set; }
     }
 
 }

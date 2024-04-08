@@ -1,0 +1,99 @@
+@page "{id:int}" /* Requires that the URL contains the event ID (baseUrl/{id}) */
+@model soft20181_starter.Pages.Events.View
+
+@{
+}
+
+@section Styles {
+  <link rel="stylesheet" href="~/css/events/view.css" />
+}
+
+<h1 style="margin-bottom: 0;" id="title">This is quite a long event title</h1>
+<div class="host">
+  <h3>Hosted By&nbsp;</h3>
+  <h3 class="host-name">A host</h3>
+</div>
+<div class="divider"></div>
+
+<section class="event-container">
+  <div class="event-media-column">
+    <section class="event-media-container desktop">
+      <img class="event-media"/>
+      <video class="event-media" controls></video>
+      <span class="navigate-button material-symbols-outlined" id="prev">chevron_left</span>
+      <span class="navigate-button material-symbols-outlined" id="next">chevron_right</span>
+    </section>
+    <section class="booking-form-container">
+      <section>
+        <h2>Booking Form</h2>
+        <p class="booking-form-description">Please fill out the form below to book your place at this event.</p>
+      </section>
+
+      <div class="loader">
+        <img src="assets/loader.gif" alt="loading icon"/>
+        <h3></h3>
+        <span>Click to refresh page</span>
+      </div>
+      <form id="booking-form">
+        <div class="form-input">
+          <label for="fname">First Name</label>
+          <input pattern="[a-zA-Z]{2,30}" type="text" id="fname" name="fname" placeholder="John" required>
+        </div>
+        <div class="form-input">
+          <label for="lname">Last Name</label>
+          <input pattern="[a-zA-Z]{2,30}" type="text" id="lname" name="lname" placeholder="Doe" required>
+        </div>
+        <div class="form-input">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="name@domain.com" required>
+        </div>
+        <div class="form-input">
+          <label for="phone">Phone Number</label>
+          <input type="tel" id="phone" name="phone" placeholder="01234567890" required>
+        </div>
+        <div class="g-recaptcha" data-sitekey="6LdcOyApAAAAADTPWLvEi0RMgb3CpEDD4AYqth6V" data-callback="onRecaptchaSubmit" data-expired-callback="onRecaptchaExpire"></div>
+        <div class="booking-term">
+          <input type="checkbox" id="terms" name="terms" required>
+          <label for="terms"></label>
+        </div>
+        <span class="captcha-warning">Please complete the reCaptcha before submitting this form.</span>
+        <div class="divider faded"></div>
+        <section class="total-book">
+          <h3 class="event-price"></h3>
+          <button class="book-button">BOOK NOW <span class="material-symbols-outlined">chevron_right</span></button>
+        </section>
+      </form>
+    </section>
+  </div>
+
+  <div class="divider vertical"></div>
+
+  <div class="event-details">
+    <h2>Details</h2>
+    <section class="event-stats">
+      <div class="event-stat">
+        <span class="material-symbols-outlined">calendar_month</span>
+        <span class="event-stat-text" id="event-date"></span>
+      </div>
+      <div class="event-stat">
+        <span id="seats-filled-icon" class="material-symbols-outlined">airline_seat_recline_extra</span>
+        <span class="event-stat-text" id="event-seats"></span>
+      </div>
+      <div class="event-stat">
+        <span class="material-symbols-outlined">location_on</span>
+        <span class="event-stat-text" id="event-location"></span>
+      </div>
+    </section>
+    <div class="divider faded"></div>
+
+    <p class="event-description"></p>
+  </div>
+  <section class="event-media-container mobile">
+    <img class="event-media" alt="event image"/>
+    <video class="event-media" controls></video>
+    <span class="navigate-button material-symbols-outlined" id="prev">chevron_left</span>
+    <span class="navigate-button material-symbols-outlined" id="next">chevron_right</span>
+  </section>
+</section>
+<h2 class="event-list-title">More Events</h2>
+<div class="event-list"></div>

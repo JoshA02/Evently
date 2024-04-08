@@ -1,0 +1,27 @@
+.main-container > h1 {
+    max-width: 780px;
+}
+.main-container > h3 {
+    margin-top: 0;
+    font-size: var(--font-size-subheading);
+    font-weight: var(--font-weight-body);
+    color: var(--text-light);
+    max-width: 590px;
+}
+.wavy-line {
+    position: absolute;
+    top: -150px;
+    left: -100px;
+    transform: scale(1.5);
+    z-index: -1;
+}
+h2 {
+    margin: 0;
+}
+.events-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 50px;
+    flex-direction: column;
+}

@@ -1,0 +1,49 @@
+.send-container {
+    display: flex;
+    justify-content: flex-end;
+}
+.send-button {
+    display: flex;
+    align-items: center;
+    border: none;
+    background-color: transparent;
+    font-size: var(--font-size-subheading);
+    color: var(--accent);
+    font-weight: bolder;
+    cursor: pointer;
+    padding: 0;
+}
+
+
+.contact-form-container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 12px;
+}
+.contact-form-container > section > h2, .contact-form-container > section > p {
+    margin: 0;
+    margin-bottom: 4px;
+}
+.contact-form-container > section > p {
+    color: var(--text-light);
+}
+.contact-form-container > section {
+    margin-bottom: 16px;
+}
+
+#contact-form > div > input {
+    margin-bottom: 12px;
+    color: var(--text);
+}
+#contact-form > .form-input:last-of-type > input {
+    margin-bottom: 0;
+}
+#contact-form > .form-input > textarea {
+    height: 16em;
+    min-height: 2em;
+    resize: vertical;
+}
+
+.g-recaptcha {
+    margin-top: 12px;
+}
