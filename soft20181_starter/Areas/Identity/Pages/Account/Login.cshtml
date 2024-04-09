@@ -1,8 +1,8 @@
-@page
-@model soft20181_starter.Pages.Account.Login
+﻿@page
+@model LoginModel
 
 @{
-    ViewData["Title"] = "Evently | Login";
+    ViewData["Title"] = "Login";
 }
 
 @section Styles {
@@ -13,12 +13,12 @@
     <h1>Login to Evently</h1>
     <h3>No account? <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Create one here</a></h3>
     
-    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
     <div class="form-input">
         <label asp-for="Input.Email" class="form-label">Email</label>
         <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com"/>
         <span asp-validation-for="Input.Email" class="text-danger"></span>
     </div>
+    
     <div class="form-input">
         <label asp-for="Input.Password" class="form-label">Password</label>
         <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password"/>
@@ -37,4 +37,10 @@
     <div class="right-align">
         <button id="login-submit" type="submit">Log In <span class="material-symbols-outlined">chevron_right</span></button>
     </div>
+    
+    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 </form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

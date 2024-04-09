@@ -22,7 +22,7 @@
         <!-- Side Navbar (sidebar) -->
         <div class="navbar-side mobile">
           <section class="navbar-links mobile">
-            <a id="my-account" class="navbar-link" style="background-color: var(--accent); color: var(--white-default)" href="/account">ACCOUNT &nbsp;<span class="material-symbols-outlined" style="color: var(--white-default)">person</span></a>
+            <a id="my-account" class="navbar-link" style="background-color: var(--accent); color: var(--white-default)" asp-area="Identity" asp-page="/Account/Logout">ACCOUNT &nbsp;<span class="material-symbols-outlined" style="color: var(--white-default)">person</span></a>
             <a class="navbar-link" href="/index">HOME</a>
             <a class="navbar-link" href="/contact">CONTACT</a>
             <a class="navbar-link" href="/events">EVENTS</a>
@@ -94,7 +94,7 @@
             </form>
             <img src="/assets/logo.svg" alt="Logo" class="logo">
             <div class="desktop">
-              <a id="my-account" class="material-symbols-outlined desktop" href="/account">person</a>
+              <a id="my-account" class="material-symbols-outlined desktop" asp-area="Identity" asp-page="/Account/Logout">person</a>
               <span id="toggle-appearance" class="material-symbols-outlined desktop">lightbulb</span>
             </div>
     
