@@ -248,7 +248,16 @@ footer {
   justify-content: center;
 }
 
+.desktop > #my-account {
+  margin-right: 12px;
+  text-decoration: none;
+  color: var(--text);
+}
+
 @media screen and (max-width: 1000px) {
+  .desktop {
+    display: none;
+  }
   nav > *.desktop {
     display: none;
   }
@@ -258,6 +267,11 @@ footer {
   nav > .navbar-top > .navbar-top-top > *.desktop {
     display: none;
   }
+  /*#toggle-appearance {*/
+  /*  display: none;*/
+  /*}*/
+  
+  
   nav > *.mobile {
     display: unset;
   }
@@ -270,10 +284,6 @@ footer {
 
   nav > .navbar-top > .navbar-top-top {
     width: 96%;
-  }
-  
-  #toggle-appearance {
-    display: none;
   }
 }
 @media screen and (min-width: 1001px) {

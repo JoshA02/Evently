@@ -82,6 +82,10 @@ body.font-2{
     font-family: 'Times New Roman', Times, serif;
 }
 
+.text-danger {
+    color: var(--urgent);
+}
+
 h1, h2, h3, h4, h5, h6 {
     color: var(--text);
 }
@@ -239,11 +243,23 @@ button:disabled {
     display: flex;
     flex-direction: column;
 }
+.form-input.hoz {
+    flex-direction: row;
+    align-items: center;
+}
+.form-input.hoz > label {
+    margin-right: 10px;
+    margin-bottom: 0;
+}
 /* .form-input > input, .form-input > input:empty {
   border: 1px solid var(--outline);
 } */
 .form-input > input:invalid {
     border: 1px solid var(--input-invalid);
+}
+
+input {
+    color: var(--text);
 }
 
 .captcha-warning {

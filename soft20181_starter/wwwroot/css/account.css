@@ -1,0 +1,45 @@
+h1 {
+    margin-bottom: 0;
+}
+h3 {
+    margin-top: 8px;
+    margin-bottom: 24px;
+    color: var(--text-tooltip);
+}
+h3 > a {
+    text-decoration: none;
+    color: var(--accent);
+}
+#forgot-password {
+    text-decoration: none;
+    color: var(--text-tooltip);
+}
+.form-input {
+    color: var(--text);
+    margin-bottom: 12px;
+}
+#account {
+    max-width: 600px;
+}
+button {
+    display: flex;
+    align-items: center;
+    border: none;
+    background-color: transparent;
+    font-size: var(--font-size-subheading);
+    color: var(--accent);
+    font-weight: bolder;
+    cursor: pointer;
+    padding: 0;
+}
+button > span {
+    color: var(--accent);
+}
+.right-align {
+    display: flex;
+    justify-content: flex-end;
+}
+.text-danger {
+    padding-left: 8px;
+    padding-top: 4px;
+}

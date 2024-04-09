@@ -1,7 +1,18 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using soft20181_starter.Models;
+
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddDbContext<EventAppDbContext>(options => options.UseSqlite(configuration.GetConnectionString("Default")));
+builder.Services.AddIdentity<User, IdentityRole>()
+    .AddDefaultTokenProviders()
+    .AddEntityFrameworkStores<EventAppDbContext>();
+builder.Services.AddAuthentication().AddCookie(options => options.LoginPath = "/Account/Login");
+
 
 
 
@@ -20,6 +31,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
