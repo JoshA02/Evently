@@ -19,7 +19,7 @@ builder.Services.AddDbContext<EventAppDbContext>(options => options.UseSqlite(co
 
 builder.Services.AddIdentity<User, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
      .AddDefaultTokenProviders()
-     .AddDefaultUI()
+     .AddDefaultUI() // TODO: Remove this once I've added my own pages
      .AddEntityFrameworkStores<EventAppDbContext>();
 // builder.Services.AddAuthentication().AddCookie(options => options.LoginPath = "/Account/Login");
 

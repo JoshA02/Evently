@@ -66,6 +66,12 @@ namespace soft20181_starter.Areas.Identity.Pages.Account
             public string LastName { get; set; }
             
             [Required]
+            [Display(Name = "Username")]
+            [StringLength(30, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 1)]
+            [RegularExpression(@"^[a-zA-Z0-9_]*$", ErrorMessage = "The {0} can only contain letters, numbers, and underscores.")]
+            public string Username { get; set; }
+            
+            [Required]
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
@@ -99,8 +105,8 @@ namespace soft20181_starter.Areas.Identity.Pages.Account
                 user.FirstName = Input.FirstName; // Set the first name to the first name
                 user.LastName = Input.LastName; // Set the last name to the last name
 
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None); // Set the username to the email
-                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None); // 
+                await _userStore.SetUserNameAsync(user, Input.Username, CancellationToken.None);
+                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None); 
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)

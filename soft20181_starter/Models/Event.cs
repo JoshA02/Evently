@@ -5,15 +5,17 @@ namespace soft20181_starter.Models
 {
     public class Event
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         [Required]
         public string Name { get; set; } = "";
         
         // Host of the event (User)
         [Required]
-        [ForeignKey("Id")]
-        public virtual User Host { get; set; }
+        public string HostId { get; set; }
+        
+        // Navigation property for the host
+        // [Required] [ForeignKey("HostId")] public virtual User Host { get; set; }
         
         [Required]
         public string Description { get; set; } = "";
@@ -28,7 +30,7 @@ namespace soft20181_starter.Models
         public string Location { get; set; } = "";
         
         [Required]
-        public string DateTime { get; set; } = "";
+        public DateTime DateTime { get; set; } = DateTime.Now;
         
         [Required]
         public int Capacity { get; set; } = 0; // Total seats

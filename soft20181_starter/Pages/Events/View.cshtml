@@ -1,17 +1,34 @@
-@page "{id:int}" /* Requires that the URL contains the event ID (baseUrl/{id}) */
+@page "{id:maxLength(36)}" /* Requires that the URL contains the event ID (baseUrl/{id}) */
+@using System.Globalization
+@using Microsoft.AspNetCore.Identity
+@using soft20181_starter.Models
 @model soft20181_starter.Pages.Events.View
 
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
 @{
+  ViewData["Title"] = @Model.Event.Name;
+
+  var seatsTotal = Model.Event.Capacity * 1f;
+  var seatsFilled = Model.Event.Registered * 1f;
+
+  string occupancy = "100%";
+  if (Model.Event.Capacity > 0) occupancy = System.Math.Round(seatsFilled / seatsTotal, 2) * 100.0f + "%";
+  
+  Console.Out.WriteLine(Model.Event.Price);
+
+  User currentUser = await UserManager.GetUserAsync(User) ?? new User();
 }
 
 @section Styles {
   <link rel="stylesheet" href="~/css/events/view.css" />
 }
 
-<h1 style="margin-bottom: 0;" id="title">This is quite a long event title</h1>
+<h1 style="margin-bottom: 0;" id="title">@Model.Event.Name</h1>
 <div class="host">
   <h3>Hosted By&nbsp;</h3>
-  <h3 class="host-name">A host</h3>
+  <h3 class="host-name">@Model.EventHost</h3>
 </div>
 <div class="divider"></div>
 
@@ -37,29 +54,36 @@
       <form id="booking-form">
         <div class="form-input">
           <label for="fname">First Name</label>
-          <input pattern="[a-zA-Z]{2,30}" type="text" id="fname" name="fname" placeholder="John" required>
+          <input type="text" id="fname" name="fname" placeholder="" readonly="readonly" value="@currentUser.FirstName" asp-for="@Model.Input.FirstName" required>
         </div>
         <div class="form-input">
           <label for="lname">Last Name</label>
-          <input pattern="[a-zA-Z]{2,30}" type="text" id="lname" name="lname" placeholder="Doe" required>
+          <input type="text" id="lname" name="lname" placeholder="" readonly="readonly" value="@currentUser.LastName" asp-for="@Model.Input.LastName" required>
         </div>
         <div class="form-input">
           <label for="email">Email</label>
-          <input type="email" id="email" name="email" placeholder="name@domain.com" required>
+          <input type="email" id="email" name="email" placeholder="name@domain.com" readonly="readonly" value="@(currentUser.Email ?? "")" asp-for="@Model.Input.Email" required>
         </div>
         <div class="form-input">
           <label for="phone">Phone Number</label>
-          <input type="tel" id="phone" name="phone" placeholder="01234567890" required>
+          <input type="tel" id="phone" name="phone" placeholder="" readonly="readonly" value="@(currentUser.PhoneNumberConfirmed ? currentUser.PhoneNumber : "")" asp-for="@Model.Input.Phone">
         </div>
-        <div class="g-recaptcha" data-sitekey="6LdcOyApAAAAADTPWLvEi0RMgb3CpEDD4AYqth6V" data-callback="onRecaptchaSubmit" data-expired-callback="onRecaptchaExpire"></div>
+        
+        <div class="form-input">
+          <label for="ticket-count">Tickets</label>
+          <input type="number" id="ticket-count" name="ticket-count" placeholder="1" value="1" min="1" max="@(Model.Event.Capacity - Model.Event.Registered)" asp-for="@Model.Input.TicketCount" required>
+        </div>
+        
+        @* <div class="g-recaptcha" data-sitekey="6LdcOyApAAAAADTPWLvEi0RMgb3CpEDD4AYqth6V" data-callback="onRecaptchaSubmit" data-expired-callback="onRecaptchaExpire"></div> *@
         <div class="booking-term">
           <input type="checkbox" id="terms" name="terms" required>
-          <label for="terms"></label>
+          <label for="terms">By checking this box I agree to pay <i><strong>@Model.EventHost</strong></i> the attendance fee (listed below*) upon arrival.</label>
         </div>
         <span class="captcha-warning">Please complete the reCaptcha before submitting this form.</span>
         <div class="divider faded"></div>
         <section class="total-book">
-          <h3 class="event-price"></h3>
+          @* <h3 class="event-price">@Math.Round(Model.Event.Price, 2).ToString("C", CultureInfo.CreateSpecificCulture("en-GB"))<span>*</span></h3> *@
+          <h3 class="event-price"><span>*</span></h3>
           <button class="book-button">BOOK NOW <span class="material-symbols-outlined">chevron_right</span></button>
         </section>
       </form>
@@ -73,20 +97,20 @@
     <section class="event-stats">
       <div class="event-stat">
         <span class="material-symbols-outlined">calendar_month</span>
-        <span class="event-stat-text" id="event-date"></span>
+        <span class="event-stat-text" id="event-date">@Model.Event.DateTime.ToLongDateString() - @Model.Event.DateTime.ToShortTimeString()</span>
       </div>
       <div class="event-stat">
         <span id="seats-filled-icon" class="material-symbols-outlined">airline_seat_recline_extra</span>
-        <span class="event-stat-text" id="event-seats"></span>
+        <span class="event-stat-text" id="event-seats">@occupancy</span>
       </div>
       <div class="event-stat">
         <span class="material-symbols-outlined">location_on</span>
-        <span class="event-stat-text" id="event-location"></span>
+        <span class="event-stat-text" id="event-location">@Model.Event.Location</span>
       </div>
     </section>
     <div class="divider faded"></div>
 
-    <p class="event-description"></p>
+    <p class="event-description">@Model.Event.Description</p>
   </div>
   <section class="event-media-container mobile">
     <img class="event-media" alt="event image"/>
@@ -97,3 +121,76 @@
 </section>
 <h2 class="event-list-title">More Events</h2>
 <div class="event-list"></div>
+
+@section Scripts
+{
+  <script>
+    $(() => {
+      function formatEventDisplay() {
+        const full = @seatsFilled >= @seatsTotal;
+        const past = new Date("@Model.Event.DateTime") < new Date();
+        const bookingFormDescription = $(".booking-form-description");
+        if(full || past) {
+          $("#booking-form").addClass("disabled");
+          $("#booking-form > .booking-term > input").prop("disabled", true);
+          $("#booking-form > .form-input > input").prop("readonly", true);
+          $("#booking-form > .g-recaptcha").addClass("disabled");
+          $(".book-button").prop("disabled", true);
+        }
+        if(past) {
+          $(bookingFormDescription).text("Sorry, this event has already passed.");
+          $(bookingFormDescription).addClass("full");
+          $(".event-description").prepend('<strong style="color: var(--urgent)">Please note: This event has already passed and is no longer taking attendees.</strong><br><br>');
+        }
+        // Only allow one of the two messages to be displayed. Prioritise past events.
+        else if (full) {
+          $(bookingFormDescription).text("Sorry, this event is now at full capacity.");
+          $(bookingFormDescription).addClass("full");
+          $(".event-description").prepend('<strong style="color: var(--urgent)">Please note: This event is now full and is not taking any more attendees.</strong><br><br>');
+        }
+      }
+      
+      function initMediaPlayer() {
+        const videoElem = $(".event-media-container > video");
+        const imgElem = $(".event-media-container > img");
+
+        imgElem.prop("src", "@Model.Event.ImageUrl");
+        
+        if(@Model.Event.VideoUrl.Length === 0) $(navigateButton).hide();
+        else videoElem.prop("src", "@Model.Event.VideoUrl");
+        
+        videoElem.hide();
+      }
+      
+      function refreshTotal(){
+        const ticketCount = $(ticketCounter).val();
+        
+        const price = Number.parseFloat(@Model.Event.Price);
+        $(".event-price").text("£" + (price * ticketCount).toFixed(2));
+      }
+      
+      const ticketCounter = $("#ticket-count");
+      const navigateButton = $(".navigate-button");
+      let showingVideo = false;
+      formatEventDisplay();
+      initMediaPlayer();
+      refreshTotal();
+      
+      $(navigateButton).on("click", () => {
+        showingVideo = !showingVideo;
+        if(showingVideo){
+          $(".event-media-container > img").fadeOut(500);
+          $(".event-media-container > video").fadeIn(500);
+        }
+        else{
+          $(".event-media-container > video").fadeOut(500);
+          $(".event-media-container > img").fadeIn(500);
+        }
+      });
+      
+      $(ticketCounter).on("change", () => {
+        refreshTotal();
+      });
+    })
+  </script>
+}

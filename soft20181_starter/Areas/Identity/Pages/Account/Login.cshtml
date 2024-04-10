@@ -14,9 +14,9 @@
     <h3>No account? <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Create one here</a></h3>
     
     <div class="form-input">
-        <label asp-for="Input.Email" class="form-label">Email</label>
-        <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com"/>
-        <span asp-validation-for="Input.Email" class="text-danger"></span>
+        <label asp-for="Input.Username" class="form-label">Username</label>
+        <input asp-for="Input.Username" class="form-control" autocomplete="username" aria-required="true" placeholder="EventlyUser_123"/>
+        <span asp-validation-for="Input.Username" class="text-danger"></span>
     </div>
     
     <div class="form-input">
