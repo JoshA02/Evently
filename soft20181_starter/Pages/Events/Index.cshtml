@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="~/css/events/event.css" />
 }
 
-<h1 style="margin-bottom: 0.1em;" id="title">Search results for </h1>
+<h1 style="margin-bottom: 0.1em;" id="title">Search results for @Model.q</h1>
 <h3 style="margin-top: 0;">Showing all results</h3>
 
 @* <form><button class="btn" type="submit" id="make-test-events">Test Events (+100)</button></form> *@
@@ -51,16 +51,5 @@
     </div>
   }
 </div>
-
-@section Scripts
-{
-  <script>
-    $(() => {
-      $(".event").on("click", (e) => {
-        window.location.href = "/events/view/" + e.currentTarget.id;
-      });
-    })
-  </script>
-}
 
 <div class="bottom-fade"></div>

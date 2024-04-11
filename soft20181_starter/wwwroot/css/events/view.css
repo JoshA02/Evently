@@ -188,6 +188,10 @@
 .event-list {
     margin-bottom: 28px;
 }
+.material-symbols-outlined {
+    text-decoration: none;
+    color: var(--text);
+}
 
 
 @media screen and (max-width: 1800px) {

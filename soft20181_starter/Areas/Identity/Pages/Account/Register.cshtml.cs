@@ -30,28 +30,32 @@ namespace soft20181_starter.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<User> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly EventAppDbContext _dbContext;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         public RegisterModel(
+            RoleManager<IdentityRole> roleManager,
             UserManager<User> userManager,
             IUserStore<User> userStore,
             SignInManager<User> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            EventAppDbContext dbContext)
         {
+            _roleManager = roleManager;
             _userManager = userManager;
             _userStore = userStore;
             _emailStore = GetEmailStore();
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _dbContext = dbContext;
         }
         
         [BindProperty]
         public InputModel Input { get; set; }
         
         public string ReturnUrl { get; set; }
-        
-        public IList<AuthenticationScheme> ExternalLogins { get; set; }
         
         public class InputModel
         {
@@ -92,15 +96,22 @@ namespace soft20181_starter.Areas.Identity.Pages.Account
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            
             if (ModelState.IsValid)
             {
+                // Make sure the email is not already in the database
+                var emailExists = _dbContext.Users.FirstOrDefault(u => u.Email.ToLower() == Input.Email.ToLower()) != null;
+                if (emailExists)
+                {
+                    ModelState.AddModelError(string.Empty, "An account with this email already exists.");
+                    return Page();
+                }
+                
                 var user = CreateUser();
                 user.FirstName = Input.FirstName; // Set the first name to the first name
                 user.LastName = Input.LastName; // Set the last name to the last name
@@ -125,6 +136,27 @@ namespace soft20181_starter.Areas.Identity.Pages.Account
                     await _emailSender.SendEmailAsync(Input.Email, "Evently | Confirm your email",
                         $"Hi {user.FirstName}! Please confirm your Evently account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
+                    
+                    // Add the user to the Visitor role, unless they're the first; in that case, add them to the Admin role
+                    var role = new IdentityRole();
+                    if(! await _roleManager.RoleExistsAsync("Admin"))
+                    {
+                        role.Name = "Admin";
+                        await _roleManager.CreateAsync(role);
+                    }
+                    else if (!await _roleManager.RoleExistsAsync("Visitor"))
+                    {
+                        role.Name = "Visitor";
+                        await _roleManager.CreateAsync(role);
+                    }
+                    else // Both roles exist; assign the user to the Visitor role
+                    {
+                        role.Name = "Visitor";
+                    }
+                    
+                    await _userManager.AddToRoleAsync(user, role.Name);
+                    
+                    
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });

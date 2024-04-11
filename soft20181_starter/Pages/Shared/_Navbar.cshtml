@@ -18,6 +18,13 @@
         <a class="navbar-link" href="/contact">CONTACT</a>
         <a class="navbar-link" href="/events">EVENTS</a>
         <a class="navbar-link" href="/appearance">APPEARANCE</a>
+        
+        <!-- Admin link -->
+        @if (User.IsInRole("Admin"))
+        {
+          <a class="navbar-link" href="/admin">ADMIN</a>
+        }
+
       </section>
     </div>
 
@@ -99,6 +106,11 @@
         <a class="navbar-link" href="/contact">CONTACT</a>
         <a class="navbar-link" href="/index">HOME</a>
         <a class="navbar-link" href="/events">EVENTS</a>
+        <!-- Admin link -->
+        @if (User.IsInRole("Admin"))
+        {
+          <a class="navbar-link" href="/admin">ADMIN</a>
+        }
       </section>
 
       <!-- Top Navbar: MOBILE search bar -->

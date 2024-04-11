@@ -1,4 +1,6 @@
+using System.Security.Claims;
 using System.Security.Policy;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +24,14 @@ builder.Services.AddIdentity<User, IdentityRole>(options => options.SignIn.Requi
      .AddDefaultUI() // TODO: Remove this once I've added my own pages
      .AddEntityFrameworkStores<EventAppDbContext>();
 // builder.Services.AddAuthentication().AddCookie(options => options.LoginPath = "/Account/Login");
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("TestPolicy", policy =>
+    {
+        // Require that the logged in user matches the id in the route (bla/blabla/{id}):
+        policy.RequireAssertion(CanEditEvent);
+    });
+});
 
 
 var app = builder.Build();
@@ -45,3 +55,31 @@ app.UseAuthorization();
 app.MapRazorPages();
 
 app.Run();
+
+
+
+Boolean CanEditEvent(AuthorizationHandlerContext context)
+{
+    if (context.User.IsInRole("Admin")) return true; // Admins can do anything; they're the best
+    if (!context.User.Identity?.IsAuthenticated ?? false) return false; // If the user isn't logged in, they can't do anything. This shouldn't be possible, but just in case
+    var userId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+    // Get http context:
+    if (context.Resource is not DefaultHttpContext httpContext) return false;
+
+    // Get route data:
+    var routeData = httpContext.Request.RouteValues;
+    foreach (var key in routeData.Keys)
+    {
+        Console.Out.WriteLine(key + ": " + routeData[key]);
+    }
+
+    if (!routeData.ContainsKey("id")) return false;
+    var routeId = routeData["id"]?.ToString();
+            
+    // Get the db context:
+    var db = httpContext.RequestServices.GetService(typeof(EventAppDbContext)) as EventAppDbContext;
+    var temp = db?.Events.FirstOrDefault(e => e.HostId == userId && e.Id.ToString() == routeId);
+
+    return temp != null;
+}

@@ -1,10 +1,11 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using soft20181_starter.Models;
-    
-namespace soft20181_starter.Pages.Events;
 
+namespace soft20181_starter.Pages.Events;
 
 [Authorize]
 public class View : PageModel
@@ -12,7 +13,7 @@ public class View : PageModel
     public Event Event { get; set; }
     public string EventHost { get; set; }
     
-    [BindProperty]
+    [BindProperty(SupportsGet = true)]
     public FormInput Input { get; set; }
     
     public readonly EventAppDbContext Db;
@@ -23,7 +24,6 @@ public class View : PageModel
     }
     public IActionResult OnGet()
     {
-        // Url looks like: /Events/View/{id}
         // Get the id from the URL:
         string? id = RouteData.Values["id"]?.ToString() ?? null;
         if (id == null) return RedirectToPage("/Events/Index"); 
@@ -38,38 +38,64 @@ public class View : PageModel
         if (host != null) EventHost = host.UserName ?? "Unknown";
         else return RedirectToPage("/Events/Index");
         
+        // This user
+        User? user = Db.Users.Find(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+        if (user == null) return RedirectToPage("/Events/Index");
+        
+        // Set default values for the form
+        Input = new FormInput
+        {
+            FirstName = user.FirstName ?? "",
+            LastName = user.LastName ?? "",
+            Email = User.FindFirst(ClaimTypes.Email)?.Value ?? "",
+            Phone = User.FindFirst(ClaimTypes.MobilePhone)?.Value ?? "",
+            TicketCount = 1,
+            EventId = Event.Id,
+        };
+        
 
         return Page();
     }
     
-    public IActionResult OnPost()
-    {
-        return Page();
-        // if (!ModelState.IsValid) return Page();
-        //
-        // // Url looks like: /Events/View/{id}
-        // // Get the id from the URL:
-        // string? id = RouteData.Values["id"]?.ToString() ?? null;
-        // if (id == null) return RedirectToPage("/Events/Index"); 
-        //
-        // // Grab the event from the database
-        // Event? temp = Db.Events.FirstOrDefault(e => e.Id == id);
-        // if (temp != null) Event = temp;
-        // else return RedirectToPage("/Events/Index");
-        //
-        // // Grab the host's username from the database
-        // User? host = Db.Users.FirstOrDefault(u => u.Id == Event.HostId);
-        // if (host != null) EventHost = host.UserName ?? "Unknown";
-        // else return RedirectToPage("/Events/Index");
-        //
-        // // Send an email to the host
-        // string subject = $"RSVP for {Event.Name}";
-        // string body = $"Name: {Input.FirstName} {Input.LastName}\n" +
-        //               $"Email: {Input.Email}\n" +
-        //               $"Phone: {Input.Phone}\n";
-        // Email.Send(host.Email, subject, body);
-        //
-        // return RedirectToPage("/Events/Index");
+    public async Task<IActionResult> OnPostBookAsync() {
+        
+        // Url looks like: /Events/View/{id}
+        // Get the id from the URL:
+        string? id = RouteData.Values["id"]?.ToString() ?? null;
+        if (id == null) return RedirectToPage("/Events/Index"); 
+        
+        // Grab the event from the database
+        Event? temp = Db.Events.FirstOrDefault(e => e.Id == id);
+        if (temp != null) Event = temp;
+        else return NotFound("Event not found");
+
+        try
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            Console.Out.WriteLine(Input.TicketCount);
+            
+            // Create a new booking
+            EventBooking booking = new EventBooking
+            {
+                UserId = userId,
+                EventId = Event.Id,
+                Tickets = Input.TicketCount,
+                TotalPrice = Input.TicketCount * Event.Price
+            };
+
+            // Add the booking to the database
+            Db.Bookings.Add(booking);
+            
+            Event.Registered += Input.TicketCount;
+            Db.Events.Update(Event);
+            
+            await Db.SaveChangesAsync();
+            return RedirectToPage("/Account/Manage/Bookings/Index", new {area = "Identity"});
+        } catch (Exception e)
+        {
+            return RedirectToPage("/Events/Index");
+        }
     }
 }
 
@@ -79,5 +105,6 @@ public class FormInput
     public string LastName { get; set; }
     public string Email { get; set; }
     public string Phone { get; set; }
-    public int TicketCount { get; set; } = 1;
+    public int TicketCount { get; set; }
+    public string EventId { get; set; }
 }

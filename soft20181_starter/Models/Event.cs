@@ -22,8 +22,7 @@ namespace soft20181_starter.Models
         
         [Required]
         public string ImageUrl { get; set; } = "";
-
-        [Required]
+        
         public string VideoUrl { get; set; } = "";
         
         [Required]

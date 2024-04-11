@@ -1,0 +1,36 @@
+@page "{id:maxLength(36)}"
+@model soft20181_starter.Areas.Identity.Pages.Account.Manage.View
+
+@{
+  Layout = null;
+}
+
+
+
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/account/manage-bookings.css" asp-append-version="true" />
+
+<style>
+  body {
+    display: block;
+  }
+</style>
+
+<div class="ticket-container">
+  <h3>@Model.booking.Event.Name</h3>
+  <span>Ref #@Model.booking.Booking.Id</span>
+  <br/>
+  <span>Date: @Model.booking.Event.DateTime.ToShortDateString()</span>
+  <span>Time: @Model.booking.Event.DateTime.ToShortTimeString()</span>
+  <br/>
+  <span>Location: @Model.booking.Event.Location</span>
+  <br/>
+  <span>Tickets on this booking: @Model.booking.Booking.Tickets</span>
+  <br/>
+  <span>Price per ticket: £@(Model.booking.Booking.TotalPrice / Model.booking.Booking.Tickets)</span>
+  <span>Total: £@(Model.booking.Booking.TotalPrice)</span>
+</div>
+
+<script>
+  window.print();
+</script>

@@ -15,17 +15,18 @@
 
   string occupancy = "100%";
   if (Model.Event.Capacity > 0) occupancy = System.Math.Round(seatsFilled / seatsTotal, 2) * 100.0f + "%";
-  
-  Console.Out.WriteLine(Model.Event.Price);
 
   User currentUser = await UserManager.GetUserAsync(User) ?? new User();
 }
 
 @section Styles {
-  <link rel="stylesheet" href="~/css/events/view.css" />
+  <link rel="stylesheet" href="~/css/events/view.css" asp-append-version="true" />
 }
 
-<h1 style="margin-bottom: 0;" id="title">@Model.Event.Name</h1>
+<div style="display: flex; flex-direction: row; margin-top: 1em; align-items: center; justify-content: space-between">
+  <h1 style="margin: 0" id="title">@Model.Event.Name</h1>
+  <a asp-page="/Events/Edit" asp-route-id="@Model.Event.Id" class="material-symbols-outlined">edit</a>
+</div>
 <div class="host">
   <h3>Hosted By&nbsp;</h3>
   <h3 class="host-name">@Model.EventHost</h3>
@@ -47,31 +48,31 @@
       </section>
 
       <div class="loader">
-        <img src="assets/loader.gif" alt="loading icon"/>
+        <img src="/assets/loader.gif" alt="loading icon"/>
         <h3></h3>
         <span>Click to refresh page</span>
       </div>
-      <form id="booking-form">
+      <form id="booking-form" method="post" asp-page-handler="book">
         <div class="form-input">
           <label for="fname">First Name</label>
-          <input type="text" id="fname" name="fname" placeholder="" readonly="readonly" value="@currentUser.FirstName" asp-for="@Model.Input.FirstName" required>
+          <input type="text" id="fname" placeholder="" readonly="readonly" asp-for="@Model.Input.FirstName" required>
         </div>
         <div class="form-input">
           <label for="lname">Last Name</label>
-          <input type="text" id="lname" name="lname" placeholder="" readonly="readonly" value="@currentUser.LastName" asp-for="@Model.Input.LastName" required>
+          <input type="text" id="lname" placeholder="" readonly="readonly" asp-for="@Model.Input.LastName" required>
         </div>
         <div class="form-input">
           <label for="email">Email</label>
-          <input type="email" id="email" name="email" placeholder="name@domain.com" readonly="readonly" value="@(currentUser.Email ?? "")" asp-for="@Model.Input.Email" required>
+          <input type="email" id="email" placeholder="name@domain.com" readonly="readonly" asp-for="@Model.Input.Email" required>
         </div>
         <div class="form-input">
           <label for="phone">Phone Number</label>
-          <input type="tel" id="phone" name="phone" placeholder="" readonly="readonly" value="@(currentUser.PhoneNumberConfirmed ? currentUser.PhoneNumber : "")" asp-for="@Model.Input.Phone">
+          <input type="tel" id="phone" placeholder="" readonly="readonly" asp-for="@Model.Input.Phone">
         </div>
         
         <div class="form-input">
           <label for="ticket-count">Tickets</label>
-          <input type="number" id="ticket-count" name="ticket-count" placeholder="1" value="1" min="1" max="@(Model.Event.Capacity - Model.Event.Registered)" asp-for="@Model.Input.TicketCount" required>
+          <input type="number" id="ticket-count" placeholder="1" min="1" max="@(Model.Event.Capacity - Model.Event.Registered)" asp-for="@Model.Input.TicketCount" required>
         </div>
         
         @* <div class="g-recaptcha" data-sitekey="6LdcOyApAAAAADTPWLvEi0RMgb3CpEDD4AYqth6V" data-callback="onRecaptchaSubmit" data-expired-callback="onRecaptchaExpire"></div> *@
@@ -82,7 +83,6 @@
         <span class="captcha-warning">Please complete the reCaptcha before submitting this form.</span>
         <div class="divider faded"></div>
         <section class="total-book">
-          @* <h3 class="event-price">@Math.Round(Model.Event.Price, 2).ToString("C", CultureInfo.CreateSpecificCulture("en-GB"))<span>*</span></h3> *@
           <h3 class="event-price"><span>*</span></h3>
           <button class="book-button">BOOK NOW <span class="material-symbols-outlined">chevron_right</span></button>
         </section>
@@ -127,8 +127,9 @@
   <script>
     $(() => {
       function formatEventDisplay() {
-        const full = @seatsFilled >= @seatsTotal;
-        const past = new Date("@Model.Event.DateTime") < new Date();
+        const full = @Model.Event.Registered >= @Model.Event.Capacity;
+        
+        const past = "@(Model.Event.DateTime < DateTime.Now)" == "True";
         const bookingFormDescription = $(".booking-form-description");
         if(full || past) {
           $("#booking-form").addClass("disabled");
@@ -190,6 +191,15 @@
       
       $(ticketCounter).on("change", () => {
         refreshTotal();
+      });
+      
+      $("#booking-form").on("submit", (e) => {
+        $("#booking-form").hide();
+        $(".loader").css("display", "flex");
+        $(".loader > h3").text("Booking your spot...");
+        $(".loader > span").hide();
+        $(".loader").hide();
+        $(".loader").slideDown(800);
       });
     })
   </script>

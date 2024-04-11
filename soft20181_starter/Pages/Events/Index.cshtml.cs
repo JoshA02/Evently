@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using soft20181_starter.Models;
 
@@ -10,6 +11,8 @@ public class Index : PageModel
     
     public readonly EventAppDbContext db;
 
+    [BindProperty(SupportsGet = true)] public string q { get; set; } = "";
+    
     private User dummyUser;
 
     public Index(EventAppDbContext db)
@@ -29,8 +32,8 @@ public class Index : PageModel
         // };
         // db.Events.Add(newEvent);
         // db.SaveChanges();
-        
-        Events = db.Events.ToList();
+
+        Events = db.Events.Where(e => e.Name.ToLower().Contains(q.ToLower())).ToList();
 
         foreach (var e in Events)
         {

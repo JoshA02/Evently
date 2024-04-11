@@ -17,10 +17,12 @@ $(() => {
 
     // Highlight current page; default to index.html if they're on the root
     const highlightCurrentPageTab = () => {
-        let currentPage = window.location.pathname.split("/").pop() || "index";
-        currentPage = currentPage.split(".")[0].toLowerCase(); // Remove file extension and convert to lowercase
+        // let currentPage = window.location.pathname.split("/").pop() || "index";
+        // currentPage = currentPage.split(".")[0].toLowerCase(); // Remove file extension and convert to lowercase
+        let currentPage = window.location.pathname.split("/")[1];
+        if (currentPage == "") currentPage = "index";
         if (currentPage == "event-detail") currentPage = "events";
-        $(`.navbar-links > a[href="./${currentPage}"]`).addClass("active");
+        $(`.navbar-links > a[href="/${currentPage}"]`).addClass("active");
     };
 
 
@@ -95,7 +97,7 @@ $(() => {
 
 
     $('.logo').on('click', () => {
-        window.location.href = './index';
+        window.location.href = '/index';
     });
 
     const onSearch = (event: JQuery.SubmitEvent<HTMLElement, undefined, HTMLElement, HTMLElement>) => {
@@ -106,7 +108,7 @@ $(() => {
         
         const queryParams = new URLSearchParams(window.location.search);
         queryParams.set('q', search.toString());
-        window.location.href = `./events?${queryParams.toString()}`;
+        window.location.href = `/events?${queryParams.toString()}`;
     };
 
     const setShowMobileSearch = (show: boolean) => {
