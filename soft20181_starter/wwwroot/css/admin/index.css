@@ -1,0 +1,104 @@
+form.users-form {
+    position: relative;
+    display: flex;
+}
+form.users-form > input {
+    padding-left: 10px;
+    padding-right: 50px;
+    height: 3em;
+    flex: 1;
+}
+form.users-form > button {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    aspect-ratio: 1;
+    border: none;
+    background-color: var(--accent);
+    color: var(--white);
+    cursor: pointer;
+    border-radius: 0 4px 4px 0;
+}
+table {
+    width: 100%;
+}
+table th, table td {
+    padding: 10px;
+    text-align: left;
+}
+table th.center, table td.center {
+    text-align: center;
+}
+table td button.hidden {
+    border: none;
+    color: var(--text);
+    background-color: transparent;
+    cursor: pointer;
+}
+
+/* Fade it out after 5 seconds */
+#status-message {
+    animation: fadeInOut 3s forwards;
+    padding-left: 12px;
+}
+
+#alert-modal {
+    /*width: 500px;*/
+    /*height: 250px;*/
+    padding: 12px 24px;
+    
+    position: fixed;
+    background-color: var(--background);
+    box-shadow: 0 0 10px var(--shadow);
+    z-index: 1;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+#alert-modal > h1 {
+    margin: 0;
+}
+
+button.big {
+    padding: 6px;
+    font-size: var(--font-size-subheading);
+    font-weight: var(--font-weight-tooltip);
+    min-width: 8em;
+    
+    color: var(--accent);
+    background-color: var(--background);
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+}
+button.big:hover {
+    background-color: var(--background-hover);
+    border: 1px solid var(--accent-hover);
+}
+button.big.primary {
+    color: var(--white);
+    background-color: var(--accent);
+    border: 1px solid var(--accent);
+}
+button.big.primary:hover {
+    background-color: var(--accent-hover);
+    border: 1px solid var(--accent);
+}
+form .buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+@keyframes fadeInOut {
+    0% {
+        opacity: 0;
+        color: var(--text);
+    }
+    40% {
+        opacity: 1;
+        color: var(--text);
+    }
+    100% {
+        color: var(--text-tooltip);
+    }
+}

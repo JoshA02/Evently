@@ -10,5 +10,10 @@ namespace soft20181_starter.Models
         
         [Required]
         public string LastName { get; set; }
+        
+        [Required]
+        public DateTime CreationDate { get; set; } = new DateTime(1970, 1, 1);
+        
+        public string FullName => FirstName + " " + LastName;
     }
 }

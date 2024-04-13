@@ -1,8 +1,91 @@
 @page
+@using Microsoft.AspNetCore.Identity
+@using soft20181_starter.Models
+@using System.Security.Claims
 @model soft20181_starter.Pages.Admin.Index
+
+@inject UserManager<User> UserManager;
 
 @{
   ViewData["Title"] = "Admin Panel";
 }
 
-<h1>Admin page</h1>
+@section Styles {
+  <link rel="stylesheet" href="~/css/admin/index.css" asp-append-version="true" />
+}
+
+
+@* <div id="alert-modal" style="display: none"> *@
+@*   <h1>Reset Password</h1> *@
+@*   <h3>Are you sure you want to reset the password for this user?</h3> *@
+@*   <form method="post" asp-page-handler="ResetPassword"> *@
+@*     <input type="hidden" name="id" value="" /> *@
+@*     <input type="hidden" name="previousSearchQuery" value="@Model.userSearchQuery" /> *@
+@*     <div class="buttons"> *@
+@*       <button type="reset" class="big">CANCEL</button> *@
+@*       <button type="submit" class="big primary">CONFIRM</button> *@
+@*     </div> *@
+@*   </form> *@
+@* </div> *@
+
+<h1 style="margin-bottom: 0.1em">Admin page</h1>
+<h3 style="margin-top: 0">View general and per-event analytics</h3>
+
+<button type="submit" class="material-symbols-outlined" id="test-submit">search</button>
+
+<div>
+  <h2>Users</h2>
+  <form method="get" class="users-form">
+    <input type="text" id="search" placeholder="Search for names.." asp-for="userSearchQuery">
+    <button type="submit" class="material-symbols-outlined">search</button>
+  </form>
+  
+  
+  <span id="status-message">@TempData["StatusMessage"]</span>
+  
+  <table>
+    <tr>
+      <th>ID</th>
+      <th>Username</th>
+      <th>Email</th>
+      <th>Role</th>
+      <th>Joined</th>
+      <th class="center">Password</th>
+      <th class="center">Delete</th>
+    </tr>
+    @foreach(var user in Model.Users)
+    {
+      <tr>
+        <td>@user.Id</td>
+        <td>@user.UserName</td>
+        <td>@user.Email</td>
+  
+        @if (UserManager.IsInRoleAsync(user, "Admin").Result)
+        {
+          <td>Admin</td>
+        }
+        else
+        {
+          <td>User</td>
+        }
+  
+        <td>@user.CreationDate</td>
+        <td class="center">
+          <form method="post" asp-page-handler="ResetPassword" id="test">
+            <input type="hidden" name="id" value="@user.Id" />
+            <input type="hidden" name="previousSearchQuery" value="@Request.Query["userSearchQuery"]" />
+            <button type="submit" class="material-symbols-outlined hidden">lock_reset</button>
+          </form>
+        </td>
+  
+        <td class="center">
+          <form method="post" asp-page-handler="DeleteUser">
+            <input type="hidden" name="id" value="@user.Id"/>
+            <input type="hidden" name="previousSearchQuery" value="@Request.Query["userSearchQuery"]" />
+            <button type="submit" class="material-symbols-outlined hidden @(User.FindFirst(ClaimTypes.NameIdentifier)?.Value == user.Id ? "fake-disabled" : "")" >delete</button>
+          </form>
+        </td>
+      </tr>
+    }
+  </table>
+</div>

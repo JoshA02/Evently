@@ -172,6 +172,25 @@ $(() => {
     $("#search-form-mobile").on("submit", (event) => onSearch(event));
     $('#search-form').on('submit', (event) => onSearch(event));
 
+
+    window.onscroll = function() {myFunction()};
+
+    // Get the header
+    const banner = $(".banner");
+
+    // Get the offset position of the navbar
+    var sticky = banner.offset()?.top ?? 0;
+
+    // Add the sticky class to the header when you reach its scroll position. Remove "sticky" when you leave the scroll position
+    function myFunction() {
+        if (window.pageYOffset > sticky) {
+            banner.addClass("sticky");
+        } else {
+            banner.removeClass("sticky");
+        }
+    }
+    
+
     // Set initial appearance of radio buttons (personalisation menu)
     setInitialAppearanceButtons();
 

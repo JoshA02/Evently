@@ -7,6 +7,7 @@ body {
     --white-default: #FFFFFF;
     --accent-default: #1075D9;
     --background-default: #F8F8F8;
+    --background-default-hover: #F0F0F0;
     --text-default: #272727;
     --text-light-default: #3C3C3C;
     --text-tooltip-default: #636363;
@@ -17,6 +18,7 @@ body {
     --white-dark: #272727;
     --accent-dark: #1075D9;
     --background-dark: #272727;
+    --background-dark-hover: #1F1F1F;
     --text-dark: #FFFFFF;
     --text-light-dark: #FFFFFF;
     --text-tooltip-dark: #FFFFFF;
@@ -28,7 +30,10 @@ body {
     /* Used Variables */
     --white: var(--white-default);
     --accent: var(--accent-default);
+    --accent-hover: #0F6AC0;
+    --banner: #043F7A;
     --background: var(--background-default);
+    --background-hover: var(--background-default-hover);
     --text: var(--text-default);
     --text-light: var(--text-light-default);
     --text-tooltip: var(--text-tooltip-default);
@@ -210,6 +215,10 @@ body {
 button:disabled {
     opacity: 0.4;
     pointer-events: none;
+}
+button.fake-disabled {
+    opacity: 0.4;
+    cursor: not-allowed!important;
 }
 .g-recaptcha.disabled {
     opacity: 0.4;

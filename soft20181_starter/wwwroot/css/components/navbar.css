@@ -254,6 +254,42 @@ footer {
   color: var(--text);
 }
 
+.banner {
+  background-color: var(--banner);
+  position: absolute;
+  width: 100%;
+  z-index: 1;
+  
+  animation: banner 5s forwards;
+}
+.banner.sticky {
+  position: fixed;
+  top: 0;
+}
+.banner h3 {
+    margin: 0;
+    padding: 0.5em 0;
+    text-align: center;
+    color: var(--white);
+    font-size: var(--font-size-body);
+    font-weight: 300;
+}
+
+@keyframes banner {
+  0% {
+    transform: translateY(-100%);
+  }
+  20% {
+    transform: translateY(0);
+  }
+  80% {
+      transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-100%);
+  }
+}
+
 @media screen and (max-width: 1000px) {
   .desktop {
     display: none;

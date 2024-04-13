@@ -115,6 +115,7 @@ namespace soft20181_starter.Areas.Identity.Pages.Account
                 var user = CreateUser();
                 user.FirstName = Input.FirstName; // Set the first name to the first name
                 user.LastName = Input.LastName; // Set the last name to the last name
+                user.CreationDate = DateTime.Now; // Set the creation date to now
 
                 await _userStore.SetUserNameAsync(user, Input.Username, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None); 

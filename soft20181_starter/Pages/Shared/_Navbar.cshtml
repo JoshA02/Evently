@@ -112,12 +112,19 @@
           <a class="navbar-link" href="/admin">ADMIN</a>
         }
       </section>
-
+      
       <!-- Top Navbar: MOBILE search bar -->
       <form id="search-form-mobile" method="post" class="mobile-search-bar-container">
         <input type="text" placeholder="Search" form="search-form-mobile">
         <button class="material-symbols-outlined" form="search-form-mobile">search</button>
       </form>
     </div>
+    
+    @if (TempData["BannerMessage"] != null)
+    {
+      <div class="banner">
+        <h3>@TempData["BannerMessage"]</h3>
+      </div>
+    }
 </nav>
 @*  Header Section End *@
