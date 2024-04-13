@@ -31,49 +31,59 @@
 <h1 style="margin-bottom: 0.1em">Admin page</h1>
 <h3 style="margin-top: 0">View general and per-event analytics</h3>
 
-<button type="submit" class="material-symbols-outlined" id="test-submit">search</button>
 
 <div>
   <h2>Users</h2>
   <form method="get" class="users-form">
-    <input type="text" id="search" placeholder="Search for names.." asp-for="userSearchQuery">
+    <input type="text" id="search" placeholder="Search for names.." asp-for="UserSearchQuery">
     <button type="submit" class="material-symbols-outlined">search</button>
   </form>
-  
   
   <span id="status-message">@TempData["StatusMessage"]</span>
   
   <table>
     <tr>
       <th>ID</th>
-      <th>Username</th>
+      <th>
+        Username
+        <span class="material-symbols-outlined sml" style="margin-left: 4px">edit</span>
+      </th>
       <th>Email</th>
       <th>Role</th>
       <th>Joined</th>
       <th class="center">Password</th>
       <th class="center">Delete</th>
+      <th class="center">Save</th>
     </tr>
     @foreach(var user in Model.Users)
     {
       <tr>
         <td>@user.Id</td>
-        <td>@user.UserName</td>
+        <td class="username-input-container" id="@user.Id">
+          <input class="username-input" placeholder="@user.UserName" />
+        </td>
         <td>@user.Email</td>
   
-        @if (UserManager.IsInRoleAsync(user, "Admin").Result)
-        {
-          <td>Admin</td>
-        }
-        else
-        {
-          <td>User</td>
-        }
+        <td>
+          <select class="role-selector">
+            @if (UserManager.IsInRoleAsync(user, "Admin").Result)
+            {
+              <option value="admin" selected>Admin</option>
+              <option value="user">User</option>
+            }
+            else
+            {
+              <option value="admin">Admin</option>
+              <option value="user" selected>User</option>
+            }
+          </select>
+        </td>
   
         <td>@user.CreationDate</td>
         <td class="center">
           <form method="post" asp-page-handler="ResetPassword" id="test">
             <input type="hidden" name="id" value="@user.Id" />
-            <input type="hidden" name="previousSearchQuery" value="@Request.Query["userSearchQuery"]" />
+            <input type="hidden" name="previousSearchQuery" value="@Request.Query["UserSearchQuery"]" />
             <button type="submit" class="material-symbols-outlined hidden">lock_reset</button>
           </form>
         </td>
@@ -81,11 +91,56 @@
         <td class="center">
           <form method="post" asp-page-handler="DeleteUser">
             <input type="hidden" name="id" value="@user.Id"/>
-            <input type="hidden" name="previousSearchQuery" value="@Request.Query["userSearchQuery"]" />
+            <input type="hidden" name="previousSearchQuery" value="@Request.Query["UserSearchQuery"]" />
             <button type="submit" class="material-symbols-outlined hidden @(User.FindFirst(ClaimTypes.NameIdentifier)?.Value == user.Id ? "fake-disabled" : "")" >delete</button>
+          </form>
+        </td>
+        
+        <td class="center">
+          <form method="post" asp-page-handler="SaveUser" id="save-changes-form">
+            <input type="hidden" name="id" value="@user.Id"/>
+            <input type="hidden" name="username" value="@user.UserName"/>
+            <input type="hidden" name="role" value="@(UserManager.IsInRoleAsync(user, "Admin").Result ? "admin" : "user")"/>
+            <input type="hidden" name="previousSearchQuery" value="@Request.Query["UserSearchQuery"]" />
+            <button type="submit" class="material-symbols-outlined hidden" disabled>save</button>
           </form>
         </td>
       </tr>
     }
   </table>
 </div>
+
+@section Scripts {
+  <script>
+    $(() => {      
+      
+      $(".username-input-container").each((i, e) => {
+        var id = $(e).attr("id");
+        var usernameInput = $(e).find(".username-input");
+        
+        usernameInput.val(usernameInput.attr("placeholder"));
+        
+        usernameInput.on("input", (e) => {
+          var tr = $(e.target).closest("tr");
+          var saveChangesForm = tr.find("#save-changes-form");
+          saveChangesForm.find("input[name='username']").val($(e.target).val());
+          saveChangesForm.find("button").removeAttr("disabled");
+        });
+      });
+      
+      $(".role-selector").on("change", (e) => {
+        // Get this role selector's parent tr element (go up two levels)
+        var tr = $(e.target).closest("tr");
+        
+        // Get the save changes form in this tr
+        var saveChangesForm = tr.find("#save-changes-form");
+        
+        // Set the role input value to the selected value
+        saveChangesForm.find("input[name='role']").val($(e.target).val());
+        
+        // Show the save button (remove disabld attribute)
+        saveChangesForm.find("button").removeAttr("disabled");
+      });
+    });
+  </script>
+}

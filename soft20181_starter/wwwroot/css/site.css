@@ -150,6 +150,10 @@ textarea {
             'GRAD' 0,
             'opsz' 24
 }
+.material-symbols-outlined.sml {
+    font-size: var(--font-size-subheading);
+    color: var(--text);
+}
 
 body {
     margin: 0;
@@ -223,6 +227,17 @@ button.fake-disabled {
 .g-recaptcha.disabled {
     opacity: 0.4;
     pointer-events: none;
+}
+
+select {
+    font-size: var(--font-size-input);
+    font-weight: var(--font-weight-input);
+    border-radius: 4px;
+    height: 26px;
+    border: 1px solid var(--outline);
+    background-color: var(--white);
+    padding: 0 6px;
+    margin: 0;
 }
 
 @media screen and (max-width: 350px) {
