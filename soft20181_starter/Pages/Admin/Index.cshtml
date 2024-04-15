@@ -14,22 +14,13 @@
   <link rel="stylesheet" href="~/css/admin/index.css" asp-append-version="true" />
 }
 
-
-@* <div id="alert-modal" style="display: none"> *@
-@*   <h1>Reset Password</h1> *@
-@*   <h3>Are you sure you want to reset the password for this user?</h3> *@
-@*   <form method="post" asp-page-handler="ResetPassword"> *@
-@*     <input type="hidden" name="id" value="" /> *@
-@*     <input type="hidden" name="previousSearchQuery" value="@Model.userSearchQuery" /> *@
-@*     <div class="buttons"> *@
-@*       <button type="reset" class="big">CANCEL</button> *@
-@*       <button type="submit" class="big primary">CONFIRM</button> *@
-@*     </div> *@
-@*   </form> *@
-@* </div> *@
-
 <h1 style="margin-bottom: 0.1em">Admin page</h1>
 <h3 style="margin-top: 0">View general and per-event analytics</h3>
+
+
+<div>
+  <h2>Events</h2>
+</div>
 
 
 <div>
@@ -48,7 +39,10 @@
         Username
         <span class="material-symbols-outlined sml" style="margin-left: 4px">edit</span>
       </th>
-      <th>Email</th>
+      <th>
+        Email
+        <span class="material-symbols-outlined sml" style="margin-left: 4px">edit</span>
+      </th>
       <th>Role</th>
       <th>Joined</th>
       <th class="center">Password</th>
@@ -57,12 +51,14 @@
     </tr>
     @foreach(var user in Model.Users)
     {
-      <tr>
+      <tr id="@user.Id">
         <td>@user.Id</td>
         <td class="username-input-container" id="@user.Id">
           <input class="username-input" placeholder="@user.UserName" />
         </td>
-        <td>@user.Email</td>
+        <td class="email-input-container" id="@user.Email">
+          <input class="email-input" placeholder="@user.Email" />
+        </td>
   
         <td>
           <select class="role-selector">
@@ -101,6 +97,7 @@
             <input type="hidden" name="id" value="@user.Id"/>
             <input type="hidden" name="username" value="@user.UserName"/>
             <input type="hidden" name="role" value="@(UserManager.IsInRoleAsync(user, "Admin").Result ? "admin" : "user")"/>
+            <input type="hidden" name="email" value="@user.Email"/>
             <input type="hidden" name="previousSearchQuery" value="@Request.Query["UserSearchQuery"]" />
             <button type="submit" class="material-symbols-outlined hidden" disabled>save</button>
           </form>
@@ -114,33 +111,37 @@
   <script>
     $(() => {      
       
-      $(".username-input-container").each((i, e) => {
-        var id = $(e).attr("id");
-        var usernameInput = $(e).find(".username-input");
+      $("tr").each((i, tr) => {
+        // check if the tr has an id attribute
+        if (!$(tr).attr("id")) {
+          return;
+        }
+        
+        const saveChangesForm = $(tr).find("#save-changes-form");
+        const id = $(tr).attr("id");
+        const usernameInput = $(tr).find(".username-input");
+        const emailInput = $(tr).find(".email-input");
+        const roleSelector = $(tr).find(".role-selector");
+        
         
         usernameInput.val(usernameInput.attr("placeholder"));
-        
         usernameInput.on("input", (e) => {
-          var tr = $(e.target).closest("tr");
-          var saveChangesForm = tr.find("#save-changes-form");
           saveChangesForm.find("input[name='username']").val($(e.target).val());
+          saveChangesForm.find("button").removeAttr("disabled");
+        });
+        
+        emailInput.val(emailInput.attr("placeholder"));
+        emailInput.on("input", (e) => {
+          saveChangesForm.find("input[name='email']").val($(e.target).val());
+          saveChangesForm.find("button").removeAttr("disabled");
+        });
+        
+        roleSelector.on("change", (e) => {
+          saveChangesForm.find("input[name='role']").val($(e.target).val());
           saveChangesForm.find("button").removeAttr("disabled");
         });
       });
       
-      $(".role-selector").on("change", (e) => {
-        // Get this role selector's parent tr element (go up two levels)
-        var tr = $(e.target).closest("tr");
-        
-        // Get the save changes form in this tr
-        var saveChangesForm = tr.find("#save-changes-form");
-        
-        // Set the role input value to the selected value
-        saveChangesForm.find("input[name='role']").val($(e.target).val());
-        
-        // Show the save button (remove disabld attribute)
-        saveChangesForm.find("button").removeAttr("disabled");
-      });
     });
   </script>
 }

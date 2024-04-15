@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using PostmarkDotNet.Exceptions;
 using soft20181_starter.Models;
 
 namespace soft20181_starter.Pages.Admin;
@@ -50,12 +51,12 @@ public class Index : PageModel
         UserSearchQuery = UserSearchQuery.ToLower();
         Console.WriteLine($"Searching for users with email or name containing '{UserSearchQuery}'");
         
-        Users = _db.Users.Where(u =>
+        Users = _db.Users.OrderByDescending(u => u.CreationDate).Where(u =>
             (u.Email != null && u.Email.ToLower().Contains(UserSearchQuery)) ||
             (u.UserName != null && (u.UserName).ToLower().Contains(UserSearchQuery))
         ).ToList();
         
-        TempData["StatusMessage"] = $"Showing users with email or name containing '{UserSearchQuery}'.";
+        TempData["StatusMessage"] = $"Showing users with email or name containing '{UserSearchQuery}', sorted by creation date.";
     }
     
     public async Task<IActionResult> OnPostDeleteUserAsync(string id, string previousSearchQuery)
@@ -130,9 +131,11 @@ public class Index : PageModel
     }
 
     // Handles all user updates that require hitting the save button (ones that might be more sensitive)
-    public async Task<IActionResult> OnPostSaveUserAsync(string id, string role, string username, string previousSearchQuery)
+    public async Task<IActionResult> OnPostSaveUserAsync(string id, string role, string username, string email, string previousSearchQuery)
     {
         var user = await _db.Users.FindAsync(id);
+        var thisUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
         bool changesMade = false;
         
         if (user == null)
@@ -140,24 +143,37 @@ public class Index : PageModel
             TempData["BannerMessage"] = "User not found. Could not save changes.";
             return RedirectToPage(new { UserSearchQuery = previousSearchQuery });
         }
+        
+        
+        // ROLE CHANGES BEGIN //
         if(role == "user") role = "visitor";
         if(role != "visitor" && role != "admin")
         {
             TempData["BannerMessage"] = "Invalid role. Could not save changes.";
             return RedirectToPage(new { UserSearchQuery = previousSearchQuery });
         }
-
         if (!_userManager.IsInRoleAsync(user, role).Result)
         {
+            if (user.Id == thisUserId)
+            {
+                TempData["BannerMessage"] = "You cannot change your own role.";
+                return RedirectToPage(new { UserSearchQuery = previousSearchQuery });
+            }
+            
             // Remove them from the other role
             await _userManager.RemoveFromRoleAsync(user, role == "admin" ? "visitor" : "admin");
             
             // Add them to the new role
             await _userManager.AddToRoleAsync(user, role);
             
+            // Might need to sign the user out
+            
             // Used for the UI message
             changesMade = true;
         }
+        // ROLE CHANGES END //
+        
+        // USERNAME CHANGES BEGIN //
         if(user.NormalizedUserName != username.ToUpper())
         {
             // Check if a user already exists with the new username
@@ -171,9 +187,46 @@ public class Index : PageModel
             await _userStore.SetUserNameAsync(user, username, CancellationToken.None);
             await _userStore.SetNormalizedUserNameAsync(user, username.ToUpper(), CancellationToken.None);
             await _db.SaveChangesAsync(); // This is necessary to update the database with the new username
-            await _signInManager.RefreshSignInAsync(user); // This is necessary to update the cookie with the new username (I think)
+            
+            // Might need to sign the user out
+            
             changesMade = true;
         }
+        // USERNAME CHANGES END //
+        
+        // EMAIL CHANGES BEGIN //
+        if(user.NormalizedEmail != email.ToUpper())
+        {
+            // Check if a user already exists with the new email
+            var userWithNewEmail = await _userManager.FindByEmailAsync(email);
+            if (userWithNewEmail != null)
+            {
+                TempData["BannerMessage"] = "Email already taken. Could not save changes.";
+                return RedirectToPage(new { UserSearchQuery = previousSearchQuery });
+            }
+
+            // Inform them of the change via their old email
+            if (user.Email != null)
+            {
+                string emailTemplate = System.IO.File.ReadAllText("./EmailTemplates/EmailChange.html");
+                emailTemplate = emailTemplate.Replace("{{firstName}}", user.FirstName);
+                emailTemplate = emailTemplate.Replace("{{newEmail}}", email);
+                try
+                {
+                    await _emailSender.SendEmailAsync(user.Email, "Email Change Confirmation", emailTemplate);
+                }
+                catch (PostmarkValidationException e) { }
+            }
+
+            user.Email = email.ToLower();
+            user.NormalizedEmail = email.ToUpper();
+            await _db.SaveChangesAsync();
+            
+            // Might need to sign the user out
+            
+            changesMade = true;
+        }
+        // EMAIL CHANGES END //
         
         
         

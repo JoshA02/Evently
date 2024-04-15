@@ -97,11 +97,12 @@ select {
 table th, table td {
     font-size: var(--font-size-input);
 }
-.username-input {
+.username-input, .email-input {
     background: transparent;
     border: none;
     font-size: 1em;
     padding: 0;
+    width: 100%;
 }
 
 @keyframes fadeInOut {

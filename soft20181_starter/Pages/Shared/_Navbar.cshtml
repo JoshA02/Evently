@@ -86,7 +86,7 @@
       <section class="navbar-top-top">
 
         <!-- Top Navbar: DESKTOP Search Bar -->
-        <form id="search-form" method="post" class="search-bar-container desktop">
+        <form id="search-form" method="get" asp-page="/events/index" class="search-bar-container desktop">
           <input type="text" placeholder="Search" form="search-form">
           <button class="material-symbols-outlined" form="search-form">search</button>
         </form>
@@ -114,7 +114,7 @@
       </section>
       
       <!-- Top Navbar: MOBILE search bar -->
-      <form id="search-form-mobile" method="post" class="mobile-search-bar-container">
+      <form id="search-form-mobile" method="get" asp-page="/events/index" class="mobile-search-bar-container">
         <input type="text" placeholder="Search" form="search-form-mobile">
         <button class="material-symbols-outlined" form="search-form-mobile">search</button>
       </form>

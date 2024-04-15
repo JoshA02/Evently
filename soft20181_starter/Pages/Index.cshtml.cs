@@ -20,8 +20,8 @@ namespace soft20181_starter.Pages
 
         public void OnGet()
         {
-            LatestEvents = db.Events.OrderByDescending(e => e.DateTime).Take(4).ToList();
-            CheapestEvents = db.Events.OrderBy(e => e.Price).Take(4).ToList();
+            LatestEvents = db.Events.OrderBy(e => e.DateTime).Where(e => e.DateTime > DateTime.Now).Take(3).ToList();
+            CheapestEvents = db.Events.OrderBy(e => e.Price).Take(3).ToList();
         }
     }
 }
