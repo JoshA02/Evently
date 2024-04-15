@@ -19,7 +19,7 @@ $(() => {
     const highlightCurrentPageTab = () => {
         // let currentPage = window.location.pathname.split("/").pop() || "index";
         // currentPage = currentPage.split(".")[0].toLowerCase(); // Remove file extension and convert to lowercase
-        let currentPage = window.location.pathname.split("/")[1];
+        let currentPage = window.location.pathname.split("/")[1]?.toLowerCase() || "index";
         if (currentPage == "") currentPage = "index";
         if (currentPage == "event-detail") currentPage = "events";
         $(`.navbar-links > a[href="/${currentPage}"]`).addClass("active");

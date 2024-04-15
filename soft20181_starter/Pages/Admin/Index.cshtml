@@ -20,91 +20,144 @@
 
 <div>
   <h2>Events</h2>
+  <form method="get" class="admin-search-form">
+    <input type="text" id="search" placeholder="Search for events.." asp-for="EventSearchQuery">
+    <input type="hidden" name="UserSearchQuery" value="@Model.UserSearchQuery" />
+    <button type="submit" class="material-symbols-outlined">search</button>
+  </form>
+  
+  <span class="status-message">@TempData["EventStatusMessage"]</span>
+  
+  <div class="table-container">
+    <table>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Organiser</th>
+        <th>Seats</th>
+        <th>Occupancy</th>
+        <th>Fill %</th>
+        <th class="center">Status</th>
+        <th class="center">Edit</th>
+        <th class="center">Delete</th>
+      </tr>
+      @foreach(var _event in Model.Events)
+      {
+        <tr id="@_event.Id" class="@(_event.DateTime > DateTime.Now ? "" : "expired")">
+          <td class="id-field">@_event.Id</td>
+          <td>@_event.Name</td>
+          <td>@(Model._db.Users.FirstOrDefault(u => u.Id == _event.HostId)?.UserName ?? "N/A")</td>
+          <td>@_event.Capacity</td>
+          <td>@_event.Registered</td>
+          <td>@(_event.Capacity > 0 ? Math.Round((double)_event.Registered / _event.Capacity * 100, 2) : 100)%</td>
+  
+          <td class="center status">@(_event.DateTime > DateTime.Now ? "Upcoming" : "Past")</td>
+          <td class="center">
+            <a href="/Events/Edit/@_event.Id" class="material-symbols-outlined">edit</a>
+          </td>
+          <td class="center">
+            <form method="post" asp-page-handler="DeleteEvent">
+              <input type="hidden" name="id" value="@_event.Id"/>
+              <input type="hidden" name="previousEventSearchQuery" value="@Request.Query["EventSearchQuery"]" />
+              <input type="hidden" name="previousSearchQuery" value="@Request.Query["UserSearchQuery"]" />
+              <button type="submit" class="material-symbols-outlined hidden">delete</button>
+            </form>
+          </td>
+        </tr>
+      }
+    </table>
+  </div>
 </div>
 
 
 <div>
   <h2>Users</h2>
-  <form method="get" class="users-form">
+  <form method="get" class="admin-search-form">
     <input type="text" id="search" placeholder="Search for names.." asp-for="UserSearchQuery">
+    <input type="hidden" name="EventSearchQuery" value="@Model.EventSearchQuery" />
     <button type="submit" class="material-symbols-outlined">search</button>
   </form>
   
-  <span id="status-message">@TempData["StatusMessage"]</span>
+  <span class="status-message">@TempData["StatusMessage"]</span>
   
-  <table>
-    <tr>
-      <th>ID</th>
-      <th>
-        Username
-        <span class="material-symbols-outlined sml" style="margin-left: 4px">edit</span>
-      </th>
-      <th>
-        Email
-        <span class="material-symbols-outlined sml" style="margin-left: 4px">edit</span>
-      </th>
-      <th>Role</th>
-      <th>Joined</th>
-      <th class="center">Password</th>
-      <th class="center">Delete</th>
-      <th class="center">Save</th>
-    </tr>
-    @foreach(var user in Model.Users)
-    {
-      <tr id="@user.Id">
-        <td>@user.Id</td>
-        <td class="username-input-container" id="@user.Id">
-          <input class="username-input" placeholder="@user.UserName" />
-        </td>
-        <td class="email-input-container" id="@user.Email">
-          <input class="email-input" placeholder="@user.Email" />
-        </td>
-  
-        <td>
-          <select class="role-selector">
-            @if (UserManager.IsInRoleAsync(user, "Admin").Result)
-            {
-              <option value="admin" selected>Admin</option>
-              <option value="user">User</option>
-            }
-            else
-            {
-              <option value="admin">Admin</option>
-              <option value="user" selected>User</option>
-            }
-          </select>
-        </td>
-  
-        <td>@user.CreationDate</td>
-        <td class="center">
-          <form method="post" asp-page-handler="ResetPassword" id="test">
-            <input type="hidden" name="id" value="@user.Id" />
-            <input type="hidden" name="previousSearchQuery" value="@Request.Query["UserSearchQuery"]" />
-            <button type="submit" class="material-symbols-outlined hidden">lock_reset</button>
-          </form>
-        </td>
-  
-        <td class="center">
-          <form method="post" asp-page-handler="DeleteUser">
-            <input type="hidden" name="id" value="@user.Id"/>
-            <input type="hidden" name="previousSearchQuery" value="@Request.Query["UserSearchQuery"]" />
-            <button type="submit" class="material-symbols-outlined hidden @(User.FindFirst(ClaimTypes.NameIdentifier)?.Value == user.Id ? "fake-disabled" : "")" >delete</button>
-          </form>
-        </td>
-        
-        <td class="center">
-          <form method="post" asp-page-handler="SaveUser" id="save-changes-form">
-            <input type="hidden" name="id" value="@user.Id"/>
-            <input type="hidden" name="username" value="@user.UserName"/>
-            <input type="hidden" name="role" value="@(UserManager.IsInRoleAsync(user, "Admin").Result ? "admin" : "user")"/>
-            <input type="hidden" name="email" value="@user.Email"/>
-            <input type="hidden" name="previousSearchQuery" value="@Request.Query["UserSearchQuery"]" />
-            <button type="submit" class="material-symbols-outlined hidden" disabled>save</button>
-          </form>
-        </td>
+  <div class="table-container">
+    <table>
+      <tr>
+        <th>ID</th>
+        <th>
+          Username
+          <span class="material-symbols-outlined sml" style="margin-left: 4px">edit</span>
+        </th>
+        <th>
+          Email
+          <span class="material-symbols-outlined sml" style="margin-left: 4px">edit</span>
+        </th>
+        <th>Role</th>
+        <th>Joined</th>
+        <th class="center">Password</th>
+        <th class="center">Delete</th>
+        <th class="center">Save</th>
       </tr>
-    }
-  </table>
+      @foreach(var user in Model.Users)
+      {
+        <tr id="@user.Id">
+          <td class="id-field">@user.Id</td>
+          <td class="username-input-container" id="@user.Id">
+            <input class="username-input" placeholder="@user.UserName" />
+          </td>
+          <td class="email-input-container" id="@user.Email">
+            <input class="email-input" placeholder="@user.Email" />
+          </td>
+    
+          <td>
+            <select class="role-selector">
+              @if (UserManager.IsInRoleAsync(user, "Admin").Result)
+              {
+                <option value="admin" selected>Admin</option>
+                <option value="user">User</option>
+              }
+              else
+              {
+                <option value="admin">Admin</option>
+                <option value="user" selected>User</option>
+              }
+            </select>
+          </td>
+    
+          <td>@user.CreationDate</td>
+          <td class="center">
+            <form method="post" asp-page-handler="ResetPassword" id="test">
+              <input type="hidden" name="id" value="@user.Id" />
+              <input type="hidden" name="previousSearchQuery" value="@Request.Query["UserSearchQuery"]" />
+              <input type="hidden" name="previousEventSearchQuery" value="@Request.Query["EventSearchQuery"]" />
+              <button type="submit" class="material-symbols-outlined hidden">lock_reset</button>
+            </form>
+          </td>
+    
+          <td class="center">
+            <form method="post" asp-page-handler="DeleteUser">
+              <input type="hidden" name="id" value="@user.Id"/>
+              <input type="hidden" name="previousSearchQuery" value="@Request.Query["UserSearchQuery"]" />
+              <input type="hidden" name="previousEventSearchQuery" value="@Request.Query["EventSearchQuery"]" />
+              <button type="submit" class="material-symbols-outlined hidden @(User.FindFirst(ClaimTypes.NameIdentifier)?.Value == user.Id ? "fake-disabled" : "")" >delete</button>
+            </form>
+          </td>
+          
+          <td class="center">
+            <form method="post" asp-page-handler="SaveUser" id="save-changes-form">
+              <input type="hidden" name="id" value="@user.Id"/>
+              <input type="hidden" name="username" value="@user.UserName"/>
+              <input type="hidden" name="role" value="@(UserManager.IsInRoleAsync(user, "Admin").Result ? "admin" : "user")"/>
+              <input type="hidden" name="email" value="@user.Email"/>
+              <input type="hidden" name="previousSearchQuery" value="@Request.Query["UserSearchQuery"]" />
+              <input type="hidden" name="previousEventSearchQuery" value="@Request.Query["EventSearchQuery"]" />
+              <button type="submit" class="material-symbols-outlined hidden" disabled>save</button>
+            </form>
+          </td>
+        </tr>
+      }
+    </table>
+  </div>
 </div>
 
 @section Scripts {

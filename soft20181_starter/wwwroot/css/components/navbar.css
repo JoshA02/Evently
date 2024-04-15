@@ -270,7 +270,7 @@ footer {
     margin: 0;
     padding: 0.5em 0;
     text-align: center;
-    color: var(--white);
+    color: var(--white-default);
     font-size: var(--font-size-body);
     font-weight: 300;
 }

@@ -34,7 +34,21 @@ public class Edit : PageModel
     
     public IActionResult OnPost()
     {
-        if (!ModelState.IsValid) return Page();
+        // if (!ModelState.IsValid) return Page();
+        if (!ModelState.IsValid)
+        {
+            // Print why the model is invalid
+            foreach (var modelStateKey in ModelState.Keys)
+            {
+                var modelStateVal = ModelState[modelStateKey];
+                foreach (var error in modelStateVal.Errors)
+                {
+                    Console.WriteLine(error.ErrorMessage);
+                }
+            }
+
+            return Page();
+        }
         
         Db.Events.Update(theEvent);
         Db.SaveChanges();

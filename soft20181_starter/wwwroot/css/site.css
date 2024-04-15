@@ -7,7 +7,7 @@ body {
     --white-default: #FFFFFF;
     --accent-default: #1075D9;
     --background-default: #F8F8F8;
-    --background-default-hover: #F0F0F0;
+    --background-hover-default: #F0F0F0;
     --text-default: #272727;
     --text-light-default: #3C3C3C;
     --text-tooltip-default: #636363;
@@ -18,10 +18,11 @@ body {
     --white-dark: #272727;
     --accent-dark: #1075D9;
     --background-dark: #272727;
-    --background-dark-hover: #1F1F1F;
+    --background-hover-dark: #1F1F1F;
     --text-dark: #FFFFFF;
     --text-light-dark: #FFFFFF;
-    --text-tooltip-dark: #FFFFFF;
+    /*--text-tooltip-dark: #FFFFFF;*/
+    --text-tooltip-dark: #b4b4b4;
     --outline-dark: #636363;
     --shadow-dark: rgba(0,0,0,0.16);
 
@@ -33,7 +34,7 @@ body {
     --accent-hover: #0F6AC0;
     --banner: #043F7A;
     --background: var(--background-default);
-    --background-hover: var(--background-default-hover);
+    --background-hover: var(--background-hover-default);
     --text: var(--text-default);
     --text-light: var(--text-light-default);
     --text-tooltip: var(--text-tooltip-default);
@@ -66,10 +67,12 @@ body.dark {
     --white: var(--white-dark);
     --accent: var(--accent-dark);
     --background: var(--background-dark);
+    --background-hover: var(--background-hover-dark);
     --text: var(--text-dark);
     --text-light: var(--text-light-dark);
     --text-tooltip: var(--text-tooltip-dark);
     --outline: var(--outline-dark);
+    --shadow: var(--shadow-dark);
 }
 body.small {
     font-size: 0.8em;
@@ -238,6 +241,7 @@ select {
     background-color: var(--white);
     padding: 0 6px;
     margin: 0;
+    color: var(--text);
 }
 
 @media screen and (max-width: 350px) {

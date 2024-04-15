@@ -1,0 +1,29 @@
+<!-- Template for the email sent to the user to confirm their email address -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Confirm Your Email</title>
+</head>
+<body>
+    <h1>Confirm Your Email</h1>
+    
+    <p>
+        Hello {{firstName}},
+    </p>
+    <p>
+        Please confirm your email address by clicking <a href="{{confirmUrl}}">here</a>.
+    </p>
+    <p>
+        Alternatively, you can copy and paste the following link into your browser:
+        <span>{{confirmUrl}}</span>
+    </p>
+    <p>
+        If you did not create an account, please ignore this email.
+    </p>
+    <p>
+        Thank you,
+        <br>
+        Evently
+    </p>
+</body>

@@ -1,14 +1,14 @@
-form.users-form {
+form.admin-search-form {
     position: relative;
     display: flex;
 }
-form.users-form > input {
+form.admin-search-form > input {
     padding-left: 10px;
     padding-right: 50px;
     height: 3em;
     flex: 1;
 }
-form.users-form > button {
+form.admin-search-form > button {
     position: absolute;
     right: 0;
     top: 0;
@@ -22,6 +22,7 @@ form.users-form > button {
 }
 table {
     width: 100%;
+    color: var(--text)
 }
 table th, table td {
     padding: 10px;
@@ -38,7 +39,7 @@ table td button.hidden {
 }
 
 /* Fade it out after 5 seconds */
-#status-message {
+.status-message {
     animation: fadeInOut 3s forwards;
     padding-left: 12px;
 }
@@ -104,13 +105,51 @@ table th, table td {
     padding: 0;
     width: 100%;
 }
+.table-container {
+    overflow-x: scroll;
+    overflow-y: scroll;
+    height: 30vh;
+    /*background-color: var(--background-hover);*/
+    /*border-radius: 4px;*/
+    border-bottom: 1px solid var(--background-hover);
+}
+.table-container table {
+    width: 100%;
+}
+
+.table-container table tbody tr:first-of-type {
+    background-color: var(--background);
+    position: sticky;
+    top: 0;
+}
+td a {
+    color: var(--text);
+    text-decoration: none;
+}
+tr.expired td.status {
+    color: var(--warning);
+}
+.id-field {
+    color: var(--text-tooltip);
+    font-size: 0.5em;
+    max-width: 6em;
+}
+
+@media screen and (max-width: 600px) {
+    .table-container table {
+        font-size: 0.7em;
+        font-weight: var(--font-weight-tooltip);
+    }
+    .id-field {
+        font-size: 0.4em;
+    }
+    td *.material-symbols-outlined {
+        font-size: 1.5em;
+    }
+}
 
 @keyframes fadeInOut {
     0% {
-        opacity: 0;
-        color: var(--text);
-    }
-    40% {
         opacity: 1;
         color: var(--text);
     }

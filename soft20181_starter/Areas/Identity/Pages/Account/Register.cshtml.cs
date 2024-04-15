@@ -134,8 +134,13 @@ namespace soft20181_starter.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Evently | Confirm your email",
-                        $"Hi {user.FirstName}! Please confirm your Evently account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    // Grab the email template from ./EmailTemplates/ConfirmEmail.html:
+                    string emailTemplate = System.IO.File.ReadAllText("./EmailTemplates/ConfirmEmail.html");
+                    emailTemplate = emailTemplate.Replace("{{firstName}}", user.FirstName);
+                    emailTemplate = emailTemplate.Replace("{{confirmUrl}}", HtmlEncoder.Default.Encode(callbackUrl));
+
+                    await _emailSender.SendEmailAsync(Input.Email, "Evently | Confirm your email", emailTemplate);
+                        // $"Hi {user.FirstName}! Please confirm your Evently account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                     
                     // Add the user to the Visitor role, unless they're the first; in that case, add them to the Admin role
