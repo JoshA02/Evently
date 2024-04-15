@@ -1,0 +1,46 @@
+@page "{id:maxlength(36)}"
+@model soft20181_starter.Pages.Events.Bookings
+
+@{
+    ViewData["Title"] = "Bookings";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin/index.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/events/bookings.css" asp-append-version="true" />
+}
+
+<h1>Bookings</h1>
+<h3>@Model.Event.Name</h3>
+<span>@Model.Event.Location @@ @Model.Event.DateTime.ToLongDateString() - @Model.Event.DateTime.ToShortTimeString()</span>
+
+<div class="divider"></div>
+
+@if (Model.EventBookings.Count == 0)
+{
+    <p>No bookings yet.</p>
+}
+else
+{
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Tickets</th>
+            <th class="center">Delete</th>
+        </tr>
+        @foreach (var booking in Model.EventBookings)
+        {
+            <tr>
+                <td>@booking.Id</td>
+                <td>@(Model.Db.Users.FirstOrDefault(u => u.Id == booking.UserId).UserName ?? "Unknown")</td>
+                <td>@booking.Tickets</td>
+                <td class="center">
+                    <form method="post" asp-page-handler="delete">
+                        <button type="submit" name="bookingId" value="@booking.Id" class="material-symbols-outlined hidden">delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </table>
+}

@@ -24,9 +24,20 @@ public class View : PageModel
         if (id == null) return RedirectToPage("/Account/Manage/Bookings/Index");
         
         booking = new EventBookingWithEvent();
-        booking.Booking = Db.Bookings.FirstOrDefault(b => b.Id.ToString() == id && b.UserId == User.FindFirst(ClaimTypes.NameIdentifier).Value);
-        
-        if (booking.Booking == null) return RedirectToPage("/Account/Manage/Bookings/Index");
+        booking.Booking = Db.Bookings.FirstOrDefault(b => b.Id.ToString() == id);
+
+        if (booking.Booking == null)
+        {
+            TempData["BannerMessage"] = "Booking not found!";
+            return RedirectToPage("/Account/Manage/Bookings/Index");
+        }
+
+        if (!User.IsInRole("Admin") && booking.Booking.UserId != User.FindFirst(ClaimTypes.NameIdentifier).Value)
+        {
+            // TempData["BannerMessage"] = "You do not have permission to view this booking!";
+            TempData["BannerMessage"] = "Booking not found!"; // Don't let them know this booking exists
+            return RedirectToPage("/Account/Manage/Bookings/Index");
+        }
         
         booking.Event = Db.Events.FirstOrDefault(e => e.Id == booking.Booking.EventId);
         if (booking.Event == null) return RedirectToPage("/Account/Manage/Bookings/Index");

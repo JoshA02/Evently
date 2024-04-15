@@ -26,7 +26,7 @@ builder.Services.AddIdentity<User, IdentityRole>(options => options.SignIn.Requi
 // builder.Services.AddAuthentication().AddCookie(options => options.LoginPath = "/Account/Login");
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("TestPolicy", policy =>
+    options.AddPolicy("CanEditEvent", policy =>
     {
         // Require that the logged in user matches the id in the route (bla/blabla/{id}):
         policy.RequireAssertion(CanEditEvent);

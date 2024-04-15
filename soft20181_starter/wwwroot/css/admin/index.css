@@ -31,12 +31,12 @@ table th, table td {
 table th.center, table td.center {
     text-align: center;
 }
-table td button.hidden {
-    border: none;
-    color: var(--text);
-    background-color: transparent;
-    cursor: pointer;
-}
+/*table td button.hidden {*/
+/*    border: none;*/
+/*    color: var(--text);*/
+/*    background-color: transparent;*/
+/*    cursor: pointer;*/
+/*}*/
 
 /* Fade it out after 5 seconds */
 .status-message {
@@ -122,7 +122,7 @@ table th, table td {
     position: sticky;
     top: 0;
 }
-td a {
+a {
     color: var(--text);
     text-decoration: none;
 }

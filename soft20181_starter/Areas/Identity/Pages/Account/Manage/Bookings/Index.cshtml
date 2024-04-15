@@ -1,4 +1,4 @@
-@page
+@page "{UserId:maxlength(36)?}"
 @model soft20181_starter.Areas.Identity.Pages.Account.Manage.Index
 
 @inject UserManager<User> UserManager
@@ -11,8 +11,14 @@
   <link rel="stylesheet" href="~/css/account/manage-bookings.css" asp-append-version="true" />
 }
 
-<h1>Your Bookings</h1>
-@* <h3></h3> *@
+@if (!string.IsNullOrEmpty(Model.UserId))
+{
+  <h1>@(Model.UserToDisplay.UserName)'s Bookings</h1>
+}
+else
+{
+  <h1>Your Bookings</h1>
+}
 
 @foreach(var booking in Model.EventBookings)
 {
@@ -25,7 +31,10 @@
     </div>
     <div class="booking-buttons">
       @* <span class="material-symbols-outlined mobile">delete</span> *@
-      <a href="/Identity/Account/Manage/Bookings/View/@booking.Booking.Id"><span class="material-symbols-outlined mobile">print</span></a>
+      <a href="/Identity/Account/Manage/Bookings/View/@booking.Booking.Id" style="text-align: center"><span class="material-symbols-outlined">print</span></a>
+      <form method="post" asp-page-handler="delete">
+        <button type="submit" name="bookingId" value="@booking.Booking.Id" class="material-symbols-outlined hidden">delete</button>
+      </form>
     </div>
   </div>
 }

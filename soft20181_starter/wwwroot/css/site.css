@@ -244,6 +244,13 @@ select {
     color: var(--text);
 }
 
+button.hidden {
+    border: none;
+    color: var(--text);
+    background-color: transparent;
+    cursor: pointer;
+}
+
 @media screen and (max-width: 350px) {
     .g-recaptcha {
         /* Stops the entire page from being scaled down on smaller displays */

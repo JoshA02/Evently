@@ -28,6 +28,26 @@ public class Index : PageModel
         // Get all events from the database, sorted by date, from the current date onwards, and filtered by the query string (if any):
         Events = db.Events.OrderBy(e => e.DateTime).Where(e => e.Name.ToLower().Contains(query.ToLower()) && e.DateTime > DateTime.Now).ToList();
         
+        
+        // Temp: Add 10 random events to the list:
+        for (int i = 0; i < 10; i++)
+        {
+            // If the db already has 10 events, don't add more:
+            if(Events.Count >= 10) break;
+            
+            DateTime ThreeToEightMonthsFromNow = DateTime.Now.AddMonths(new Random().Next(3, 8));
+            
+            Event newEvent = new Event
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "New Event ",
+                DateTime = ThreeToEightMonthsFromNow,
+                HostId = dummyUser.Id
+            };
+            db.Events.Add(newEvent);
+        }
+        db.SaveChanges();
+        
     }
     
     // public void OnGet()

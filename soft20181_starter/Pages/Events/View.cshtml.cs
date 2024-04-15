@@ -16,6 +16,10 @@ public class View : PageModel
     [BindProperty(SupportsGet = true)]
     public FormInput Input { get; set; }
     
+    const int SUGGESTED_EVENT_COUNT = 4;
+    
+    public List<Event> SuggestedEvents { get; set; }
+    
     public readonly EventAppDbContext Db;
     
     public View(EventAppDbContext db)
@@ -53,7 +57,45 @@ public class View : PageModel
             EventId = Event.Id,
         };
         
+        // Get suggested events - START
+        
+        List<Event> LatestEvents = Db.Events.OrderBy(e => e.DateTime).Where(e => 
+            e.DateTime > DateTime.Now &&
+            e.HostId != user.Id &&
+            e.Id != Event.Id
+        ).Take(20).ToList();
 
+        List<EventBooking> UserBookings = Db.Bookings.Where(b => b.UserId == user.Id).ToList();
+        List<string> BookedHosts = new List<string>();
+        List<string> BookedEventIds = new List<string>();
+        foreach (EventBooking booking in UserBookings)
+        {
+            Event? e = Db.Events.FirstOrDefault(e => e.Id == booking.EventId);
+            if (e != null && !BookedHosts.Contains(e.HostId)) BookedHosts.Add(e.HostId);
+            if (e != null && !BookedEventIds.Contains(e.Id)) BookedEventIds.Add(e.Id);
+        }
+        
+        List<Event> RelevantEvents = Db.Events.OrderBy(e => e.DateTime).Where(e => 
+            e.DateTime > DateTime.Now &&
+            e.Id != Event.Id &&
+            e.HostId != user.Id &&
+            BookedHosts.Contains(e.HostId) &&
+            !BookedEventIds.Contains(e.Id)
+        ).Take(4).ToList();
+
+        SuggestedEvents = RelevantEvents;
+
+        Console.WriteLine("Need to fill " + (SUGGESTED_EVENT_COUNT - SuggestedEvents.Count) + " more suggested events");
+        
+        // If we don't have enough events, fill the rest with the latest events
+        foreach (Event e in LatestEvents)
+        {
+            if (SuggestedEvents.Count >= SUGGESTED_EVENT_COUNT) break;
+            if (!SuggestedEvents.Contains(e)) SuggestedEvents.Add(e);
+        }
+
+        // Get suggested events - END
+        
         return Page();
     }
     

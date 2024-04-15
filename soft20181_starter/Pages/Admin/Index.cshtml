@@ -19,7 +19,10 @@
 
 
 <div>
-  <h2>Events</h2>
+  <div style="display: flex; flex-direction: row; align-items: center">
+    <h2>Events</h2>
+    <a href="/Events/Edit" style="padding-left: 4px" class="material-symbols-outlined">add</a>
+  </div>
   <form method="get" class="admin-search-form">
     <input type="text" id="search" placeholder="Search for events.." asp-for="EventSearchQuery">
     <input type="hidden" name="UserSearchQuery" value="@Model.UserSearchQuery" />
@@ -95,6 +98,7 @@
         <th>Role</th>
         <th>Joined</th>
         <th class="center">Password</th>
+        <th class="center">Bookings</th>
         <th class="center">Delete</th>
         <th class="center">Save</th>
       </tr>
@@ -132,6 +136,10 @@
               <input type="hidden" name="previousEventSearchQuery" value="@Request.Query["EventSearchQuery"]" />
               <button type="submit" class="material-symbols-outlined hidden">lock_reset</button>
             </form>
+          </td>
+          
+          <td class="center">
+            <a href="/Identity/Account/Manage/Bookings/@user.Id" class="material-symbols-outlined">calendar_today</a>
           </td>
     
           <td class="center">

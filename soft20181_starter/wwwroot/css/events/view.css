@@ -192,6 +192,13 @@
     text-decoration: none;
     color: var(--text);
 }
+.header-container {
+    display: flex;
+    flex-direction: row;
+    margin-top: 1em;
+    align-items: center;
+    justify-content: space-between;
+}
 
 
 @media screen and (max-width: 1800px) {
@@ -222,6 +229,16 @@
     }
     .event-details > .divider {
         display: none;
+    }
+    .header-container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .header-icons-container {
+        padding-top: 1em;
+    }
+    .header-icons-container a:first-child {
+        padding-right: 0.8em;
     }
 }
 @media screen and (max-width: 400px) {

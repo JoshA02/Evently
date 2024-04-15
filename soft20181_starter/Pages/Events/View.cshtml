@@ -21,16 +21,21 @@
 
 @section Styles {
   <link rel="stylesheet" href="~/css/events/view.css" asp-append-version="true" />
+  <link rel="stylesheet" href="~/css/events/event.css" asp-append-version="true" />
 }
 
-<div style="display: flex; flex-direction: row; margin-top: 1em; align-items: center; justify-content: space-between">
-  <h1 style="margin: 0" id="title">@Model.Event.Name</h1>
-  
-  <a asp-page="/Events/Edit" asp-route-id="@Model.Event.Id" class="material-symbols-outlined">edit</a>
-</div>
-<div class="host">
-  <h3>Hosted By&nbsp;</h3>
-  <h3 class="host-name">@Model.EventHost</h3>
+<div class="header-container">
+  <div>
+    <h1 style="margin: 0" id="title">@Model.Event.Name</h1>
+    <div class="host">
+      <h3>Hosted By&nbsp;</h3>
+      <h3 class="host-name">@Model.EventHost</h3>
+    </div>
+  </div>
+  <div class="header-icons-container">
+    <a asp-page="/Events/Edit" asp-route-id="@Model.Event.Id" class="material-symbols-outlined">edit</a>
+    <a asp-page="/Events/Bookings" asp-route-id="@Model.Event.Id" class="material-symbols-outlined">calendar_today</a>
+  </div>
 </div>
 <div class="divider"></div>
 
@@ -121,7 +126,39 @@
   </section>
 </section>
 <h2 class="event-list-title">More Events</h2>
-<div class="event-list"></div>
+<h3>Based on your existing bookings and latest events</h3>
+<div class="event-list">
+  @foreach (var e in Model.SuggestedEvents) {
+    <div class="event" id=@e.Id>
+      <div class="event-image-container">
+        <img src="@(e.ImageUrl.Length == 0 ? "./assets/event-image-default.png" : e.ImageUrl)" alt="Event image"/>
+      </div>
+      <div class="event-info">
+        <h3>@e.Name</h3>
+        
+        @* Host *@
+        <div class="event-detail-container">
+          <span class="material-symbols-outlined">domain</span>
+          <p class="event-detail">
+            @{User? host = Model.Db.Users.FirstOrDefault(user => user.Id == e.HostId); }
+            @(host?.UserName ?? "")
+          </p>
+        </div>
+        
+        @* Date *@
+        <div class="event-detail-container">
+          <span class="material-symbols-outlined">event</span>
+          <p class="event-detail">@e.DateTime.ToLongDateString() - @e.DateTime.ToShortTimeString()</p>
+        </div>
+        
+        @* Price *@
+        <div class="event-price-container">
+          <p class="event-detail">£0.00</p>
+        </div>
+      </div>
+    </div>
+  }
+</div>
 
 @section Scripts
 {
@@ -158,8 +195,11 @@
 
         imgElem.prop("src", "@Model.Event.ImageUrl");
         
-        if(@Model.Event.VideoUrl.Length === 0) $(navigateButton).hide();
+        
+        if (@(Model.Event.VideoUrl == null ? 1 : 0)) $(navigateButton).hide();
         else videoElem.prop("src", "@Model.Event.VideoUrl");
+        // if(@Model.Event.VideoUrl == null || @Model.Event.VideoUrl?.Length <= 0) $(navigateButton).hide();
+        // else videoElem.prop("src", "@Model.Event.VideoUrl");
         
         videoElem.hide();
       }
