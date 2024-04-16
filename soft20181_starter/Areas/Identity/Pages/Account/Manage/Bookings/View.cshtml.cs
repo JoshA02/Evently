@@ -10,6 +10,7 @@ namespace soft20181_starter.Areas.Identity.Pages.Account.Manage;
 public class View : PageModel
 {
     public EventBookingWithEvent booking { get; set; }
+    public string? Host { get; set; }
     
     public readonly EventAppDbContext Db;
     
@@ -21,6 +22,7 @@ public class View : PageModel
     public IActionResult OnGet()
     {
         var id = RouteData.Values["id"]?.ToString() ?? null;
+        TempData["BannerMessage"] = "Booking not found!";
         if (id == null) return RedirectToPage("/Account/Manage/Bookings/Index");
         
         booking = new EventBookingWithEvent();
@@ -40,7 +42,18 @@ public class View : PageModel
         }
         
         booking.Event = Db.Events.FirstOrDefault(e => e.Id == booking.Booking.EventId);
-        if (booking.Event == null) return RedirectToPage("/Account/Manage/Bookings/Index");
+        if (booking.Event == null)
+        {
+            TempData["BannerMessage"] = "The requested booking is for an event that no longer exists!";
+            return RedirectToPage("/Account/Manage/Bookings/Index");
+        }
+        
+        Host = Db.Users.FirstOrDefault(u => u.Id == booking.Event.HostId)?.UserName;
+        if (Host == null)
+        {
+            TempData["BannerMessage"] = "The host of the event no longer exists!";
+            return RedirectToPage("/Account/Manage/Bookings/Index");
+        }
         
         return Page();
     }
