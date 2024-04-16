@@ -78,7 +78,7 @@ public class View : PageModel
             FirstName = user.FirstName ?? "",
             LastName = user.LastName ?? "",
             Email = User.FindFirst(ClaimTypes.Email)?.Value ?? "",
-            Phone = User.FindFirst(ClaimTypes.MobilePhone)?.Value ?? "",
+            Phone = user.PhoneNumber ?? "",
             TicketCount = 1,
             EventId = Event.Id,
         };
