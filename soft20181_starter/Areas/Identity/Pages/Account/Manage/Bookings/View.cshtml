@@ -2,33 +2,46 @@
 @model soft20181_starter.Areas.Identity.Pages.Account.Manage.View
 
 @{
-  Layout = null;
+  Layout = null; // Don't want the navbar and footer
 }
 
 
 
 <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/css/account/manage-bookings.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/account/view-booking.css" asp-append-version="true" />
 
-<style>
-  body {
-    display: block;
-  }
-</style>
-
+<div class="ticket-header-container">
+  <img src="~/assets/logo.svg" alt="logo"/>
+  <h3>Booking #@Model.booking.Booking.Id</h3>
+</div>
 <div class="ticket-container">
-  <h3>@Model.booking.Event.Name</h3>
-  <span>Ref #@Model.booking.Booking.Id</span>
-  <br/>
-  <span>Date: @Model.booking.Event.DateTime.ToShortDateString()</span>
-  <span>Time: @Model.booking.Event.DateTime.ToShortTimeString()</span>
-  <br/>
-  <span>Location: @Model.booking.Event.Location</span>
-  <br/>
-  <span>Tickets on this booking: @Model.booking.Booking.Tickets</span>
-  <br/>
-  <span>Price per ticket: £@(Model.booking.Booking.TotalPrice / Model.booking.Booking.Tickets)</span>
-  <span>Total: £@(Model.booking.Booking.TotalPrice)</span>
+  <div class="ticket-main-details">
+    <h2>@Model.booking.Event.Name</h2>
+    <h3>@Model.booking.Event.Location</h3>
+    <h3>@Model.booking.Event.DateTime.ToLongDateString() - @Model.booking.Event.DateTime.ToShortTimeString()</h3>
+    <br/>
+    <p style="color: var(--text-tooltip)">Pricing Details</p>
+    <h3>@Model.booking.Booking.Tickets tickets @@ £@(Model.booking.Booking.TotalPrice / Model.booking.Booking.Tickets) / ticket</h3>
+    <h3>Total: £@(Model.booking.Booking.TotalPrice)</h3>
+    <br/>
+    <p style="color: var(--text-tooltip)">Extra Details</p>
+    <span>Booked at @Model.booking.Booking.BookingTime.ToShortDateString() - @Model.booking.Booking.BookingTime.ToShortTimeString()</span>
+  </div>
+  <img src="@("https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + Model.booking.Booking.Id)" alt="Event image" />
+  @* <h3>@Model.booking.Event.Name</h3> *@
+  @* <span>Ref #@Model.booking.Booking.Id</span> *@
+  @* <br/> *@
+  @* <span>Date: @Model.booking.Event.DateTime.ToShortDateString()</span> *@
+  @* <span>Time: @Model.booking.Event.DateTime.ToShortTimeString()</span> *@
+  @* <br/> *@
+  @* <span>Location: @Model.booking.Event.Location</span> *@
+  @* <br/> *@
+  @* <span>Tickets on this booking: @Model.booking.Booking.Tickets</span> *@
+  @* <br/> *@
+  @* <span>Price per ticket: £@(Model.booking.Booking.TotalPrice / Model.booking.Booking.Tickets)</span> *@
+  @* <span>Total: £@(Model.booking.Booking.TotalPrice)</span> *@
+  @* <img style="width: 30%; aspect-ratio: 1; margin-top: 1em; margin-bottom: 1em" src="@("https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + Model.booking.Booking.Id)" alt="Event image" /> *@
 </div>
 
 <script>

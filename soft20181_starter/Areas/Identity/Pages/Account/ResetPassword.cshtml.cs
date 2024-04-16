@@ -99,13 +99,17 @@ namespace soft20181_starter.Areas.Identity.Pages.Account
             if (user == null)
             {
                 // Don't reveal that the user does not exist
-                return RedirectToPage("./ResetPasswordConfirmation");
+                TempData["BannerMessage"] = "Password reset successful.";
+                return RedirectToPage("/Index");
+                // return RedirectToPage("./ResetPasswordConfirmation");
             }
 
             var result = await _userManager.ResetPasswordAsync(user, Input.Code, Input.Password);
             if (result.Succeeded)
             {
-                return RedirectToPage("./ResetPasswordConfirmation");
+                TempData["BannerMessage"] = "Password reset successful.";
+                return RedirectToPage("/Index");
+                // return RedirectToPage("./ResetPasswordConfirmation");
             }
 
             foreach (var error in result.Errors)

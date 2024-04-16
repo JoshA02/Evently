@@ -36,7 +36,15 @@
     </div>
 </form>
 
-<h2>Your Events</h2>
+<div class="your-events-title-container">
+    <h2>Your Events</h2>
+    <form method="get" asp-page="/Events/Edit" style="margin-left: 12px">
+        <button type="submit" class="solid">+</button>
+    </form>
+</div>
+@if (Model.HostedEvents.Count == 0) {
+    <p>You have not hosted any events yet.</p>
+}
 <div class="event-list-container">
     <div class="event-list">
         @foreach (var e in Model.HostedEvents) {

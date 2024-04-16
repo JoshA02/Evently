@@ -51,6 +51,10 @@ button > span {
     width: 100%;
     overflow-x: scroll;
 }
+.your-events-title-container {
+    display: flex;
+    align-items: center;
+}
 
 @media screen and (max-width: 800px) {
     .event {
@@ -68,5 +72,8 @@ button > span {
     }
     .event-info h3 {
         font-size: unset;
+    }
+    .your-events-title-container {
+        justify-content: space-between;
     }
 }

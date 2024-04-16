@@ -25,7 +25,7 @@ builder.Services.AddDbContext<EventAppDbContext>(options =>
 
 builder.Services.AddIdentity<User, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
      .AddDefaultTokenProviders()
-     .AddDefaultUI() // TODO: Remove this once I've added my own pages
+     // .AddDefaultUI()
      .AddEntityFrameworkStores<EventAppDbContext>();
 // builder.Services.AddAuthentication().AddCookie(options => options.LoginPath = "/Account/Login");
 builder.Services.AddAuthorization(options =>
