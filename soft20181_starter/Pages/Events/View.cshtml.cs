@@ -8,7 +8,7 @@ using soft20181_starter.Models;
 
 namespace soft20181_starter.Pages.Events;
 
-[Authorize]
+// [Authorize]
 public class View : PageModel
 {
     public Event Event { get; set; }
@@ -54,6 +54,15 @@ public class View : PageModel
     
     public IActionResult OnGet()
     {
+        // This user
+        User? user = Db.Users.Find(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+        if (user == null)
+        {
+            TempData["BannerMessage"] = "You must be logged in to view events.";
+            return RedirectToPage("/Events/Index");
+        }
+        
+        
         // Get the id from the URL:
         string? id = RouteData.Values["id"]?.ToString() ?? null;
         if (id == null) return RedirectToPage("/Events/Index"); 
@@ -67,10 +76,6 @@ public class View : PageModel
         User? host = Db.Users.FirstOrDefault(u => u.Id == Event.HostId);
         if (host != null) EventHost = host.UserName ?? "Unknown";
         else return RedirectToPage("/Events/Index");
-        
-        // This user
-        User? user = Db.Users.Find(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-        if (user == null) return RedirectToPage("/Events/Index");
         
         // Set default values for the form
         Input = new FormInput
