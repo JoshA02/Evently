@@ -32,8 +32,10 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("CanEditEvent", policy =>
     {
-        // Require that the logged in user matches the id in the route (bla/blabla/{id}):
         policy.RequireAssertion(CanEditEvent);
+        // Require that the logged in user matches the id in the route (bla/blabla/{id}):
+        // policy.RequireAssertion(CanEditEvent);
+        // policy.RequireAuthenticatedUser();
     });
 });
 
@@ -62,15 +64,15 @@ app.Run();
 
 
 
-Boolean CanEditEvent(AuthorizationHandlerContext context)
+async Task<Boolean> CanEditEvent(AuthorizationHandlerContext context)
 {
     if (context.User.IsInRole("Admin")) return true; // Admins can do anything; they're the best
     if (!context.User.Identity?.IsAuthenticated ?? false) return false; // If the user isn't logged in, they can't do anything. This shouldn't be possible, but just in case
     var userId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
+    
     // Get http context:
     if (context.Resource is not DefaultHttpContext httpContext) return false;
-
+    
     // Get route data:
     var routeData = httpContext.Request.RouteValues;
     foreach (var key in routeData.Keys)
@@ -78,12 +80,13 @@ Boolean CanEditEvent(AuthorizationHandlerContext context)
         Console.Out.WriteLine(key + ": " + routeData[key]);
     }
 
-    if (!routeData.ContainsKey("id")) return false;
+    // If there's no id, then a new event is being created, so the user can do that.
+    if (!routeData.ContainsKey("id")) return true;
+    
     var routeId = routeData["id"]?.ToString();
             
     // Get the db context:
     var db = httpContext.RequestServices.GetService(typeof(EventAppDbContext)) as EventAppDbContext;
-    var temp = db?.Events.FirstOrDefault(e => e.HostId == userId && e.Id.ToString() == routeId);
-
+    var temp = await db.Events.AsNoTracking().FirstOrDefaultAsync(e => e.Id == routeId && e.HostId == userId);
     return temp != null;
 }

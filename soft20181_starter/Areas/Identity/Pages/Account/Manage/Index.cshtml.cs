@@ -166,5 +166,16 @@ namespace soft20181_starter.Areas.Identity.Pages.Account.Manage
             BannerMessage = "Your profile has been updated";
             return RedirectToPage();
         }
+
+        public async Task<IActionResult> OnPostLogOutAsync() {
+            await _signInManager.SignOutAsync();
+            return RedirectToPage("/Account/Login", new { area = "Identity" });
+        }
+        public IActionResult OnPostMyBookingsAsync() {
+            return RedirectToPage("/Account/Manage/Bookings/Index", new { area = "Identity" });
+        }
+        public IActionResult OnPostNewEventAsync() {
+            return RedirectToPage("/Events/Edit");
+        }
     }
 }

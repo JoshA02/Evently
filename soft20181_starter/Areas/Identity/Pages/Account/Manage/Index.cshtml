@@ -38,12 +38,22 @@
 
 <h2>Your Events</h2>
 <div class="event-list-container">
-<div class="event-list">
-    @foreach (var e in Model.HostedEvents) {
-        <partial name="Events/_Event" model="e"/>
-    }
+    <div class="event-list">
+        @foreach (var e in Model.HostedEvents) {
+            <partial name="Events/_Event" model="e"/>
+        }
+    </div>
 </div>
-</div>
+
+<form asp-page-handler="MyBookings" style="margin-top: 2em">
+    <button type="submit" class="solid">My Bookings</button>
+</form>
+<form asp-page-handler="NewEvent" style="margin-top: 1em">
+    <button type="submit" class="solid">New Event</button>
+</form>
+<form asp-page-handler="LogOut" style="margin-top: 1em">
+    <button type="submit" class="outline">Log Out</button>
+</form>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

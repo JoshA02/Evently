@@ -67,12 +67,18 @@ public class Edit : PageModel
     
     public async Task<IActionResult> OnPost()
     {
+        
+        // TheEvent = await Db.Events.FindAsync(TheEvent.Id);
+        // if (TheEvent == null) return RedirectToPage("/Events/Index");
+        
         // Check that the host id is the same as the user id, or if the user is an admin
         if (TheEvent.HostId != User.FindFirst(ClaimTypes.NameIdentifier)?.Value && !User.IsInRole("Admin"))
         {
             TempData["BannerMessage"] = "You do not have permission to do that!";
             return RedirectToPage("/Events/View", new { id = TheEvent.Id });
         }
+        
+        Console.WriteLine("Stage 1" + Db.Entry(TheEvent).State); // Debugging
         
         // New event
         if (TheEvent.Id == "N/A")
@@ -86,7 +92,7 @@ public class Edit : PageModel
             
             TheEvent.Id = Guid.NewGuid().ToString();
             Db.Events.Add(TheEvent);
-            Db.SaveChanges();
+            await Db.SaveChangesAsync();
             TempData["BannerMessage"] = "Event created successfully!";
             return RedirectToPage("/Events/View", new { id = TheEvent.Id });
         }
@@ -118,9 +124,13 @@ public class Edit : PageModel
             TempData["BannerMessage"] = "You do not have permission to do that!";
             return RedirectToPage("/Events/View", new { id = TheEvent.Id });
         }
+        Console.WriteLine("Stage 2" + Db.Entry(TheEvent).State); // Debugging
         
         Db.Events.Update(TheEvent);
-        Db.SaveChanges();
+        await Db.SaveChangesAsync();
+        
+        Console.WriteLine("Stage 3" + Db.Entry(TheEvent).State); // Debugging
+        
         TempData["BannerMessage"] = "Event updated successfully!";
         return RedirectToPage("/Events/View", new { id = TheEvent.Id });
     }
