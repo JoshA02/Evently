@@ -17,157 +17,14 @@
 <h1 style="margin-bottom: 0.1em">Admin page</h1>
 <h3 style="margin-top: 0">View general and per-event analytics</h3>
 
-
-<div>
-  <div style="display: flex; flex-direction: row; align-items: center">
-    <h2>Events</h2>
-    <a href="/Events/Edit" style="padding-left: 4px" class="material-symbols-outlined">add</a>
-  </div>
-  <form method="get" class="admin-search-form">
-    <input type="text" id="search" placeholder="Search for events.." asp-for="EventSearchQuery">
-    <input type="hidden" name="UserSearchQuery" value="@Model.UserSearchQuery" />
-    <button type="submit" class="material-symbols-outlined">search</button>
-  </form>
-  
-  <span class="status-message">@TempData["EventStatusMessage"]</span>
-  
-  <div class="table-container">
-    <table>
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Organiser</th>
-        <th>Seats</th>
-        <th>Occupancy</th>
-        <th>Fill %</th>
-        <th class="center">Status</th>
-        <th class="center">Edit</th>
-        <th class="center">Delete</th>
-      </tr>
-      @foreach(var _event in Model.Events)
-      {
-        <tr id="@_event.Id" class="@(_event.DateTime > DateTime.Now ? "" : "expired")">
-          <td class="id-field">@_event.Id</td>
-          <td>@_event.Name</td>
-          <td>@(Model._db.Users.FirstOrDefault(u => u.Id == _event.HostId)?.UserName ?? "N/A")</td>
-          <td>@_event.Capacity</td>
-          <td>@_event.Registered</td>
-          <td>@(_event.Capacity > 0 ? Math.Round((double)_event.Registered / _event.Capacity * 100, 2) : 100)%</td>
-  
-          <td class="center status">@(_event.DateTime > DateTime.Now ? "Upcoming" : "Past")</td>
-          <td class="center">
-            <a href="/Events/Edit/@_event.Id" class="material-symbols-outlined">edit</a>
-          </td>
-          <td class="center">
-            <form method="post" asp-page-handler="DeleteEvent">
-              <input type="hidden" name="id" value="@_event.Id"/>
-              <input type="hidden" name="previousEventSearchQuery" value="@Request.Query["EventSearchQuery"]" />
-              <input type="hidden" name="previousSearchQuery" value="@Request.Query["UserSearchQuery"]" />
-              <button type="submit" class="material-symbols-outlined hidden">delete</button>
-            </form>
-          </td>
-        </tr>
-      }
-    </table>
-  </div>
-</div>
+<partial name="_EventList"/>
+<partial name="_UserList"/>
+<partial name="_ContactList"/>
 
 
-<div>
-  <h2>Users</h2>
-  <form method="get" class="admin-search-form">
-    <input type="text" id="search" placeholder="Search for names.." asp-for="UserSearchQuery">
-    <input type="hidden" name="EventSearchQuery" value="@Model.EventSearchQuery" />
-    <button type="submit" class="material-symbols-outlined">search</button>
-  </form>
-  
-  <span class="status-message">@TempData["StatusMessage"]</span>
-  
-  <div class="table-container">
-    <table>
-      <tr>
-        <th>ID</th>
-        <th>
-          Username
-          <span class="material-symbols-outlined sml" style="margin-left: 4px">edit</span>
-        </th>
-        <th>
-          Email
-          <span class="material-symbols-outlined sml" style="margin-left: 4px">edit</span>
-        </th>
-        <th>Role</th>
-        <th>Joined</th>
-        <th class="center">Password</th>
-        <th class="center">Bookings</th>
-        <th class="center">Delete</th>
-        <th class="center">Save</th>
-      </tr>
-      @foreach(var user in Model.Users)
-      {
-        <tr id="@user.Id">
-          <td class="id-field">@user.Id</td>
-          <td class="username-input-container" id="@user.Id">
-            <input class="username-input" placeholder="@user.UserName" />
-          </td>
-          <td class="email-input-container" id="@user.Email">
-            <input class="email-input" placeholder="@user.Email" />
-          </td>
-    
-          <td>
-            <select class="role-selector">
-              @if (UserManager.IsInRoleAsync(user, "Admin").Result)
-              {
-                <option value="admin" selected>Admin</option>
-                <option value="user">User</option>
-              }
-              else
-              {
-                <option value="admin">Admin</option>
-                <option value="user" selected>User</option>
-              }
-            </select>
-          </td>
-    
-          <td>@user.CreationDate</td>
-          <td class="center">
-            <form method="post" asp-page-handler="ResetPassword" id="test">
-              <input type="hidden" name="id" value="@user.Id" />
-              <input type="hidden" name="previousSearchQuery" value="@Request.Query["UserSearchQuery"]" />
-              <input type="hidden" name="previousEventSearchQuery" value="@Request.Query["EventSearchQuery"]" />
-              <button type="submit" class="material-symbols-outlined hidden">lock_reset</button>
-            </form>
-          </td>
-          
-          <td class="center">
-            <a href="/Identity/Account/Manage/Bookings/@user.Id" class="material-symbols-outlined">calendar_today</a>
-          </td>
-    
-          <td class="center">
-            <form method="post" asp-page-handler="DeleteUser">
-              <input type="hidden" name="id" value="@user.Id"/>
-              <input type="hidden" name="previousSearchQuery" value="@Request.Query["UserSearchQuery"]" />
-              <input type="hidden" name="previousEventSearchQuery" value="@Request.Query["EventSearchQuery"]" />
-              <button type="submit" class="material-symbols-outlined hidden @(User.FindFirst(ClaimTypes.NameIdentifier)?.Value == user.Id ? "fake-disabled" : "")" >delete</button>
-            </form>
-          </td>
-          
-          <td class="center">
-            <form method="post" asp-page-handler="SaveUser" id="save-changes-form">
-              <input type="hidden" name="id" value="@user.Id"/>
-              <input type="hidden" name="username" value="@user.UserName"/>
-              <input type="hidden" name="role" value="@(UserManager.IsInRoleAsync(user, "Admin").Result ? "admin" : "user")"/>
-              <input type="hidden" name="email" value="@user.Email"/>
-              <input type="hidden" name="previousSearchQuery" value="@Request.Query["UserSearchQuery"]" />
-              <input type="hidden" name="previousEventSearchQuery" value="@Request.Query["EventSearchQuery"]" />
-              <button type="submit" class="material-symbols-outlined hidden" disabled>save</button>
-            </form>
-          </td>
-        </tr>
-      }
-    </table>
-  </div>
-</div>
 
+@* This script is responsible for updating the hidden inputs in the save-changes-form *@
+@* and enabling the save button when the user changes a property on a given user *@
 @section Scripts {
   <script>
     $(() => {      
@@ -202,6 +59,36 @@
           saveChangesForm.find("button").removeAttr("disabled");
         });
       });
+      
+      $(".open-contact-button").on("click", (e) => {
+        const name = $(e.target).attr("name");
+        const email = $(e.target).attr("email");
+        const phone = $(e.target).attr("phone");
+        const event = $(e.target).attr("event");
+        const host = $(e.target).attr("host");
+        const message = $(e.target).attr("message");
+        openMessagePopup(name, email, phone, event, host, message);
+      });
+      
+      $(".close-popup").on("click", (e) => {
+        $(".popup").fadeOut(200);
+      });
+      
+      console.log("Admin page scripts loaded");
+      function openMessagePopup(name, email, phone, event, host, message) {
+        $(".popup .icon-container span:nth-child(1)").html(`<span class="material-symbols-outlined">person</span> ${name || "N/A"}`);
+        $(".popup .icon-container span:nth-child(2)").html(`<span class="material-symbols-outlined">email</span> ${email || "N/A"}`);
+        $(".popup .icon-container span:nth-child(3)").html(`<span class="material-symbols-outlined">phone</span> ${phone || "N/A"}`);
+        $(".popup .icon-container span:nth-child(4)").html(`<span class="material-symbols-outlined">event</span> ${event || "N/A"}`);
+        $(".popup .icon-container span:nth-child(5)").html(`<span class="material-symbols-outlined">corporate_fare</span> ${host || "N/A"}`);
+        
+        $(".popup .message").val(message || "Cannot find message. Please try again.");
+        
+        const popup = $(".popup");
+        $(popup).css("display", "flex");
+        $(popup).hide().fadeIn(200);
+        
+      }
       
     });
   </script>

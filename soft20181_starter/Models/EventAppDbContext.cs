@@ -10,7 +10,7 @@ namespace soft20181_starter.Models
             
         }
 
-        // public DbSet<Contact> Contacts { get; set; } // Table for contact form submissions
+        public DbSet<Contact> Contacts { get; set; } // Table for contact form submissions
         public DbSet<Event> Events { get; set; }
         
         public DbSet<EventBooking> Bookings { get; set; }

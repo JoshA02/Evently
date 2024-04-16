@@ -1,0 +1,85 @@
+@model Pages.Admin.Index
+
+
+@{
+  // Event Search
+  if (string.IsNullOrEmpty(Model.EventSearchQuery) || !Model.ModelState.IsValid)
+  {
+    Model.Events = Model._db.Events.OrderByDescending(e => e.DateTime).Take(50).ToList();
+    TempData["EventStatusMessage"] = "Showing the first 50 events, sorted by date occurring.";
+  }
+  else
+  {
+    Model.EventSearchQuery = Model.EventSearchQuery.ToLower();
+    Model.Events = Model._db.Events.OrderByDescending(e => e.DateTime).Where(e =>
+      (e.Name.ToLower().Contains(Model.EventSearchQuery)) ||
+      (Model._db.Users.FirstOrDefault(u => u.Id == e.HostId) != null && 
+       Model._db.Users.First(u => u.Id == e.HostId).UserName.ToLower().Contains(Model.EventSearchQuery))
+    ).ToList();
+
+    TempData["EventStatusMessage"] =
+      $"Showing events with name or host name containing '{Model.EventSearchQuery}', sorted by date occurring.";
+  }
+}
+
+<div>
+  <div style="display: flex; flex-direction: row; align-items: center; justify-content: space-between">
+    <h2>Events</h2>
+    
+    <form method="get" asp-page="/Events/Edit">
+      <button type="submit" class="solid">+</button>
+    </form>
+  </div>
+  <form method="get" class="admin-search-form">
+    <input type="text" id="search" placeholder="Search for events.." asp-for="EventSearchQuery">
+    <input type="hidden" name="UserSearchQuery" value="@Model.UserSearchQuery" />
+    <input type="hidden" name="ContactSearchQuery" value="@Model.ContactSearchQuery" />
+    <button type="submit" class="material-symbols-outlined">search</button>
+  </form>
+  
+  <span class="status-message">@TempData["EventStatusMessage"]</span>
+  
+  <div class="table-container">
+    <table>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Organiser</th>
+        <th>Seats</th>
+        <th>Occupancy</th>
+        <th>Fill %</th>
+        <th class="center">Status</th>
+        <th class="center">Edit</th>
+        <th class="center">Delete</th>
+      </tr>
+      @foreach(var _event in Model.Events)
+      {
+        <tr id="@_event.Id" class="@(_event.DateTime > DateTime.Now ? "" : "expired")">
+          <td class="id-field">@_event.Id</td>
+          <td>@_event.Name <a target="_blank" href="/Events/view/@_event.Id" class="material-symbols-outlined sml">open_in_new</a></td>
+          <td>@(Model._db.Users.FirstOrDefault(u => u.Id == _event.HostId)?.UserName ?? "N/A")</td>
+          <td>@_event.Capacity</td>
+          <td>@_event.Registered</td>
+          <td>@(_event.Capacity > 0 ? Math.Round((double)_event.Registered / _event.Capacity * 100, 2) : 100)%</td>
+  
+          <td class="center status">@(_event.DateTime > DateTime.Now ? "Upcoming" : "Past")</td>
+          <td class="center">
+            <a href="/Events/Edit/@_event.Id" class="material-symbols-outlined">edit</a>
+          </td>
+          <td class="center">
+            <form method="post" asp-page-handler="DeleteEvent">
+              <input type="hidden" name="id" value="@_event.Id"/>
+              <input type="hidden" name="previousEventSearchQuery" value="@Model.EventSearchQuery" />
+              <input type="hidden" name="previousSearchQuery" value="@Model.UserSearchQuery" />
+              <input type="hidden" name="previousContactSearchQuery" value="@Model.ContactSearchQuery" />
+              <button type="submit" class="material-symbols-outlined hidden">delete</button>
+            </form>
+          </td>
+        </tr>
+      }
+    </table>
+  </div>
+</div>
+
+
+

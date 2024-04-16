@@ -29,34 +29,35 @@ else
 <div class="event-list">
   @foreach (var e in Model.Events)
   {
-    <div class="event" id=@e.Id>
-      <div class="event-image-container">
-        <img src="@(e.ImageUrl.Length == 0 ? "./assets/event-image-default.png" : e.ImageUrl)" alt="Event image"/>
-      </div>
-      <div class="event-info">
-        <h3>@e.Name</h3>
-        
-        @* Host *@
-        <div class="event-detail-container">
-          <span class="material-symbols-outlined">domain</span>
-          <p class="event-detail">
-            @{ User? host = Model.db.Users.FirstOrDefault(user => user.Id == e.HostId); }
-            @(host?.UserName ?? "")
-          </p>
-        </div>
-        
-        @* Date *@
-        <div class="event-detail-container">
-          <span class="material-symbols-outlined">event</span>
-          <p class="event-detail">@e.DateTime.ToLongDateString() - @e.DateTime.ToShortTimeString()</p>
-        </div>
-        
-        @* Price *@
-        <div class="event-price-container">
-          <p class="event-detail">£0.00</p>
-        </div>
-      </div>
-    </div>
+    <partial name="Events/_Event" model="e"/>
+    @* <div class="event" id=@e.Id> *@
+    @*   <div class="event-image-container"> *@
+    @*     <img src="@(e.ImageUrl.Length == 0 ? "./assets/event-image-default.png" : e.ImageUrl)" alt="Event image"/> *@
+    @*   </div> *@
+    @*   <div class="event-info"> *@
+    @*     <h3>@e.Name</h3> *@
+    @*      *@
+    @*     $1$ Host #1# *@
+    @*     <div class="event-detail-container"> *@
+    @*       <span class="material-symbols-outlined">domain</span> *@
+    @*       <p class="event-detail"> *@
+    @*         @{ User? host = Model.db.Users.FirstOrDefault(user => user.Id == e.HostId); } *@
+    @*         @(host?.UserName ?? "") *@
+    @*       </p> *@
+    @*     </div> *@
+    @*      *@
+    @*     $1$ Date #1# *@
+    @*     <div class="event-detail-container"> *@
+    @*       <span class="material-symbols-outlined">event</span> *@
+    @*       <p class="event-detail">@e.DateTime.ToLongDateString() - @e.DateTime.ToShortTimeString()</p> *@
+    @*     </div> *@
+    @*      *@
+    @*     $1$ Price #1# *@
+    @*     <div class="event-price-container"> *@
+    @*       <p class="event-detail">£0.00</p> *@
+    @*     </div> *@
+    @*   </div> *@
+    @* </div> *@
   }
 </div>
 

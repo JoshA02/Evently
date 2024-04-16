@@ -15,11 +15,15 @@ var configuration = builder.Configuration;
 builder.Services.AddRazorPages();
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.Configure<AuthMessageSenderOptions>(configuration);
-builder.Services.AddDbContext<EventAppDbContext>(options => options.UseSqlite(connectionString));
+builder.Services.AddDbContext<EventAppDbContext>(options =>
+{
+    options.UseSqlite(connectionString);
+    options.EnableSensitiveDataLogging(true);
+});
 
 // builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<EventAppDbContext>();
 
-builder.Services.AddIdentity<User, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddIdentity<User, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
      .AddDefaultTokenProviders()
      .AddDefaultUI() // TODO: Remove this once I've added my own pages
      .AddEntityFrameworkStores<EventAppDbContext>();

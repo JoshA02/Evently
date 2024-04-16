@@ -26,3 +26,8 @@
     outline: 1px solid var(--outline);
     max-width: 300px;
 }
+a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: var(--font-weight-tooltip);
+}

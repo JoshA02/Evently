@@ -6,16 +6,27 @@ namespace soft20181_starter.Models
     {
         public int Id { get; set; }
 
-        [Required] public string FirstName { get; set; } = "";
+        [Required]
+        [RegularExpression(@"[a-zA-Z]{2,30}", ErrorMessage = "First name must be between 2 and 30 characters and contain only letters.")]
+        public string FirstName { get; set; } = "";
 
-        [Required] public string LastName { get; set; } = "";
+        [Required]
+        [RegularExpression(@"[a-zA-Z]{2,30}", ErrorMessage = "Last name must be between 2 and 30 characters and contain only letters.")]
+        public string LastName { get; set; } = "";
 
         [Required] [EmailAddress] public string Email { get; set; } = "";
 
-        public string Phone { get; set; } = ""; // Optional field, can be empty or null
-        public string EventName { get; set; } = ""; // Optional field, can be empty or null
-        public string EventHost { get; set; } = ""; // Optional field, can be empty or null
+        [Phone] // This is a built-in validation attribute
+        public string? Phone { get; set; } = ""; // Optional field, can be empty or null
+        
+        [StringLength(50, ErrorMessage = "Event name must be less than 50 characters.")]
+        public string? EventName { get; set; } = ""; // Optional field, can be empty or null
+        
+        [StringLength(50, ErrorMessage = "Event host must be less than 50 characters.")]
+        public string? EventHost { get; set; } = ""; // Optional field, can be empty or null
 
-        [Required] public string Message { get; set; } = "";
+        [Required]
+        [StringLength(2000, ErrorMessage = "Message must be less than 2000 characters.")]
+        public string Message { get; set; } = "";
     }
 }

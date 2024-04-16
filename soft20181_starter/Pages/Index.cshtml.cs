@@ -10,8 +10,8 @@ namespace soft20181_starter.Pages
 
         public readonly EventAppDbContext db;
         
-        public List<Event> LatestEvents = new List<Event>();
-        public List<Event> CheapestEvents = new List<Event>();
+        public List<EventWithHost> LatestEvents = new List<EventWithHost>();
+        public List<EventWithHost> CheapestEvents = new List<EventWithHost>();
 
         public IndexModel(EventAppDbContext db)
         {
@@ -20,8 +20,20 @@ namespace soft20181_starter.Pages
 
         public void OnGet()
         {
-            LatestEvents = db.Events.OrderBy(e => e.DateTime).Where(e => e.DateTime > DateTime.Now).Take(3).ToList();
-            CheapestEvents = db.Events.OrderBy(e => e.Price).Take(3).ToList();
+            List<Event> _LatestEvents = db.Events.OrderBy(e => e.DateTime).Where(e => e.DateTime > DateTime.Now).Take(3).ToList();
+            List<Event> _CheapestEvents = db.Events.OrderBy(e => e.Price).Take(3).ToList();
+            
+            foreach (Event e in _LatestEvents)
+            {
+                User host = db.Users.FirstOrDefault(u => u.Id == e.HostId);
+                LatestEvents.Add(new EventWithHost { Event = e, Host = host });
+            }
+            
+            foreach (Event e in _CheapestEvents)
+            {
+                User host = db.Users.FirstOrDefault(u => u.Id == e.HostId);
+                CheapestEvents.Add(new EventWithHost { Event = e, Host = host });
+            }
         }
     }
 }

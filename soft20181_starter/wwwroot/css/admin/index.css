@@ -135,6 +135,49 @@ tr.expired td.status {
     max-width: 6em;
 }
 
+div.popup {
+    position: fixed;
+    background-color: var(--background);
+    box-shadow: 0 0 10px var(--shadow);
+    z-index: 1;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 12px;
+    border-radius: 4px;
+    min-height: 30em;
+    min-width: 60vw;
+    display: flex;
+    flex-direction: column;
+    display: none;
+}
+div.popup > h2 {
+    margin: 0 0 0.4em;
+}
+div.popup .icon-container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 0;
+}
+div.popup .icon-container > * {
+    margin: 0.2em;
+}
+div.popup .icon-container > span {
+    display: flex;
+    align-items: center;
+}
+div.popup .icon-container > span > span {
+    margin-right: 0.3em;
+}
+div.popup .message {
+    font-size: var(--font-size-input);
+    font-weight: var(--font-weight-body);
+    color: var(--text-light);
+    display: flex;
+    flex: 1;
+}
+
+
 @media screen and (max-width: 600px) {
     .table-container table {
         font-size: 0.7em;

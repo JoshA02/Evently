@@ -1,0 +1,84 @@
+@model Admin.Index
+
+
+@{
+  // Contact Search
+  if (string.IsNullOrEmpty(Model.ContactSearchQuery) || !Model.ModelState.IsValid)
+  {
+    Model.Contacts = Model._db.Contacts.ToList();
+    TempData["ContactStatusMessage"] = "Showing all contact form submissions.";
+  }
+  else
+  {
+    Model.ContactSearchQuery = Model.ContactSearchQuery.ToLower();
+    Model.Contacts = Model._db.Contacts.Where(c =>
+      (c.FirstName + " " + c.LastName).ToLower().Contains(Model.ContactSearchQuery) ||
+      c.Email.ToLower().Contains(Model.ContactSearchQuery) ||
+      c.Phone != null && c.Phone.ToLower().Contains(Model.ContactSearchQuery)
+    ).ToList();
+
+    TempData["ContactStatusMessage"] =
+      $"Showing contact form submissions with name, email, or phone number containing '{Model.ContactSearchQuery}'.";
+  }
+}
+
+<div class="popup">
+  <h2>Message</h2>
+  <p class="icon-container">
+    <span><span class="material-symbols-outlined">person</span>N/A</span>
+    <span><span class="material-symbols-outlined">email</span>N/A</span>
+    <span><span class="material-symbols-outlined">phone</span>N/A</span>
+    <span><span class="material-symbols-outlined">event</span>N/A</span>
+    <span><span class="material-symbols-outlined">corporate_fare</span>N/A</span>
+  </p>
+  <textarea class="message" readonly>This is a message from a user</textarea>
+  <button class="solid close-popup" style="margin-top: 1em; max-width: 10em">CLOSE</button>
+</div>
+
+<div>
+  <h2>Contact Us Submissions</h2>
+  <form method="get" class="admin-search-form">
+    <input type="text" id="search" placeholder="Search for submissions.." asp-for="ContactSearchQuery">
+    <input type="hidden" name="UserSearchQuery" value="@Model.UserSearchQuery" />
+    <input type="hidden" name="EventSearchQuery" value="@Model.EventSearchQuery" />
+    <button type="submit" class="material-symbols-outlined">search</button>
+  </form>
+  
+  <span class="status-message">@TempData["ContactStatusMessage"]</span>
+  
+  <div class="table-container">
+    <table>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Event</th>
+        <th>Event Host</th>
+        <th class="center">View</th>
+      </tr>
+      @foreach(var _contact in Model.Contacts)
+      {
+        <tr id="@_contact.Id">
+          <td>@_contact.Id</td>
+          <td>@(_contact.FirstName + " " + _contact.LastName)</td>
+          <td>@_contact.Email</td>
+          <td>@(_contact.Phone ?? "N/A")</td>
+          <td>@(_contact.EventName ?? "N/A")</td>
+          <td>@(_contact.EventHost ?? "N/A")</td>
+
+          <td class="center">
+            <button class="material-symbols-outlined hidden open-contact-button" 
+                    name="@_contact.FirstName @_contact.LastName"
+                    email="@_contact.Email"
+                    phone="@_contact.Phone"
+                    event="@_contact.EventName"
+                    host="@_contact.EventHost"
+                    message="@_contact.Message"
+            >open_in_full</button>
+          </td>
+        </tr>
+      }
+    </table>
+  </div>
+</div>

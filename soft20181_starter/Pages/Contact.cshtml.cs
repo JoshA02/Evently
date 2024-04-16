@@ -8,24 +8,25 @@ namespace soft20181_starter.Pages
     {
         [BindProperty]
         public Contact ContactInfo { get; set; }
+        
+        public EventAppDbContext _db { get; set; }
 
-
-        public void OnGet()
+        public ContactModel(EventAppDbContext db)
         {
-
+            _db = db;
         }
+        
+        public void OnGet() { }
 
-        public void OnPost()
+        public IActionResult OnPost()
         {
-            if(ModelState.IsValid)
-            {
-                // Save to Database
-                // Show success message
-                // return
-            }
+            if(!ModelState.IsValid) return Page();
             
-
-
+            _db.Contacts.Add(ContactInfo);
+            _db.SaveChanges();
+            TempData["BannerMessage"] = "Thank you for your message! We will get back to you soon.";
+            
+            return RedirectToPage("/Contact"); // Same page, but doing this clears the form
         }
     }
 }

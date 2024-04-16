@@ -12,43 +12,49 @@
 <h3 style="margin-top: 0;">Got any questions or suggestions? Let us know here!</h3>
 
 <section class="contact-form-container">
-  <section>
-    <h2>Send us a message</h2>
-    <p class="booking-form-description">Please fill out the form below to book your place at this event.</p>
-  </section>
-
   <div class="loader">
     <img src="assets/loader.gif" alt="loading spinner"/>
     <h3></h3>
     <span>Click to refresh page</span>
   </div>
-  <form id="contact-form">
+  <form id="contact-form" method="post">
     <div class="form-input">
-      <label for="fname">First Name</label>
-      <input pattern="[a-zA-Z]{2,30}" type="text" id="fname" name="fname" placeholder="John" required>
+      <label asp-for="ContactInfo.FirstName">First Name</label>
+      <span asp-validation-for="ContactInfo.FirstName" class="validation"></span>
+      <input asp-for="ContactInfo.FirstName" placeholder="John" required>
     </div>
     <div class="form-input">
-      <label for="lname">Last Name</label>
-      <input pattern="[a-zA-Z]{2,30}" type="text" id="lname" name="lname" placeholder="Doe" required>
+      <label asp-for="ContactInfo.LastName">Last Name</label>
+      <span asp-validation-for="ContactInfo.LastName" class="validation"></span>
+      <input asp-for="ContactInfo.LastName" placeholder="Doe" required>
     </div>
     <div class="form-input">
-      <label for="email">Email</label>
-      <input type="email" id="email" name="email" placeholder="name@domain.com" required>
+      <label asp-for="ContactInfo.Email">Email</label>
+      <span asp-validation-for="ContactInfo.Email" class="validation"></span>
+      <input asp-for="ContactInfo.Email" placeholder="name@domain.com" required>
     </div>
     <div class="form-input">
-      <label for="phone">Phone Number (optional)</label>
-      <input type="tel" id="phone" name="phone" placeholder="01234567890">
+      <label asp-for="ContactInfo.Phone">Phone Number (optional)</label>
+      <span asp-validation-for="ContactInfo.Phone" class="validation"></span>
+      <input asp-for="ContactInfo.Phone" placeholder="01234567890">
     </div>
     <div class="form-input">
-      <label for="event-name">Event Name & Host (optional)</label>
-      <input type="text" id="event-name" name="event-name" placeholder="A great event (Evently)">
+      <label asp-for="ContactInfo.EventName">Event Name (optional)</label>
+      <span asp-validation-for="ContactInfo.EventName" class="validation"></span>
+      <input asp-for="ContactInfo.EventName" placeholder="A great event">
     </div>
     <div class="form-input">
-      <label for="desc">Description of issue or suggestion</label>
-      <textarea pat type="text" id="desc" name="desc" placeholder="Start typing here..." required></textarea>
+      <label asp-for="ContactInfo.EventHost">Event Host (optional)</label>
+      <span asp-validation-for="ContactInfo.EventHost" class="validation"></span>
+      <input asp-for="ContactInfo.EventHost" placeholder="AnEventlyUser_123">
     </div>
-    <div class="g-recaptcha" data-sitekey="6LdcOyApAAAAADTPWLvEi0RMgb3CpEDD4AYqth6V" data-callback="onContactRecaptchaSubmit" data-expired-callback="onContactRecaptchaExpire"></div>
-    <span class="captcha-warning">Please complete the reCaptcha before submitting this form.</span>
+    <div class="form-input">
+      <label asp-for="ContactInfo.Message">Description of issue or suggestion</label>
+      <span asp-validation-for="ContactInfo.Message" class="validation"></span>
+      <textarea type="text" asp-for="ContactInfo.Message" placeholder="Start typing here..." required></textarea>
+    </div>
+    @* <div class="g-recaptcha" data-sitekey="6LdcOyApAAAAADTPWLvEi0RMgb3CpEDD4AYqth6V" data-callback="onContactRecaptchaSubmit" data-expired-callback="onContactRecaptchaExpire"></div> *@
+    @* <span class="captcha-warning">Please complete the reCaptcha before submitting this form.</span> *@
     <div class="divider faded"></div>
     <section class="send-container">
       <button class="send-button">SEND <span class="material-symbols-outlined">chevron_right</span></button>

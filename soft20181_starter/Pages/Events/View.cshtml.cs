@@ -18,7 +18,7 @@ public class View : PageModel
     
     const int SUGGESTED_EVENT_COUNT = 4;
     
-    public List<Event> SuggestedEvents { get; set; }
+    public List<EventWithHost> SuggestedEvents { get; set; }
     
     public readonly EventAppDbContext Db;
     
@@ -82,16 +82,28 @@ public class View : PageModel
             BookedHosts.Contains(e.HostId) &&
             !BookedEventIds.Contains(e.Id)
         ).Take(4).ToList();
-
-        SuggestedEvents = RelevantEvents;
-
-        Console.WriteLine("Need to fill " + (SUGGESTED_EVENT_COUNT - SuggestedEvents.Count) + " more suggested events");
         
-        // If we don't have enough events, fill the rest with the latest events
-        foreach (Event e in LatestEvents)
+        List<Event> _SuggestedEvents = new List<Event>();
+        _SuggestedEvents.AddRange(RelevantEvents);
+        _SuggestedEvents.AddRange(LatestEvents);
+        
+        // Removes duplicates
+        _SuggestedEvents = _SuggestedEvents.Distinct().ToList();
+        
+        SuggestedEvents = new List<EventWithHost>();
+        foreach (Event e in _SuggestedEvents)
         {
-            if (SuggestedEvents.Count >= SUGGESTED_EVENT_COUNT) break;
-            if (!SuggestedEvents.Contains(e)) SuggestedEvents.Add(e);
+            if(SuggestedEvents.Count >= SUGGESTED_EVENT_COUNT) break; // Take the first 4 events
+            User thisHost = Db.Users.FirstOrDefault(u => u.Id == e.HostId);
+            if (thisHost == null) continue;
+            
+            EventWithHost thisEventWithHost = new EventWithHost
+            {
+                Event = e,
+                Host = thisHost
+            };
+            
+            SuggestedEvents.Add(thisEventWithHost);
         }
 
         // Get suggested events - END

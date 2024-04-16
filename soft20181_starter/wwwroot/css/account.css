@@ -43,3 +43,30 @@ button > span {
     padding-left: 8px;
     padding-top: 4px;
 }
+
+.event-list {
+    width: max-content;
+}
+.event-list-container {
+    width: 100%;
+    overflow-x: scroll;
+}
+
+@media screen and (max-width: 800px) {
+    .event {
+        width: 275px;
+        margin-bottom: unset;
+    }
+    .event-info h3 {
+        font-size: unset;
+    }
+}
+@media screen and (max-width: 650px) {
+    .event {
+        width: 275px;
+        margin-bottom: unset;
+    }
+    .event-info h3 {
+        font-size: unset;
+    }
+}

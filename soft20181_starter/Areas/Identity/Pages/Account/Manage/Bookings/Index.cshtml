@@ -20,21 +20,29 @@ else
   <h1>Your Bookings</h1>
 }
 
-@foreach(var booking in Model.EventBookings)
+@if (Model.EventBookings.Count == 0)
 {
-  <div class="booking">
-    <div class="booking-details">
-      <h2>@booking.Event.Name</h2>
-      <span>@booking.Event.DateTime.ToLongDateString() - @booking.Event.DateTime.ToShortTimeString()</span>
-      <span>@booking.Event.Location</span>
-      <span>@booking.Booking.Tickets ticket(s)</span>
+  <p>No bookings yet.</p>
+  <p>Why not <a href="/Events">find an event</a> to attend?</p>
+}
+else
+{
+  @foreach (var booking in Model.EventBookings)
+  {
+    <div class="booking">
+      <div class="booking-details">
+        <h2>@booking.Event.Name</h2>
+        <span>@booking.Event.DateTime.ToLongDateString() - @booking.Event.DateTime.ToShortTimeString()</span>
+        <span>@booking.Event.Location</span>
+        <span>@booking.Booking.Tickets ticket(s)</span>
+      </div>
+      <div class="booking-buttons">
+        @* <span class="material-symbols-outlined mobile">delete</span> *@
+        <a href="/Identity/Account/Manage/Bookings/View/@booking.Booking.Id" style="text-align: center"><span class="material-symbols-outlined">print</span></a>
+        <form method="post" asp-page-handler="delete">
+          <button type="submit" name="bookingId" value="@booking.Booking.Id" class="material-symbols-outlined hidden">delete</button>
+        </form>
+      </div>
     </div>
-    <div class="booking-buttons">
-      @* <span class="material-symbols-outlined mobile">delete</span> *@
-      <a href="/Identity/Account/Manage/Bookings/View/@booking.Booking.Id" style="text-align: center"><span class="material-symbols-outlined">print</span></a>
-      <form method="post" asp-page-handler="delete">
-        <button type="submit" name="bookingId" value="@booking.Booking.Id" class="material-symbols-outlined hidden">delete</button>
-      </form>
-    </div>
-  </div>
+  }
 }

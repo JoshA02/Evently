@@ -171,6 +171,11 @@ body {
     min-height: 100vh;
 }
 
+.validation {
+    color: var(--urgent);
+    margin: 0;
+}
+
 
 
 @keyframes loading {
@@ -249,6 +254,21 @@ button.hidden {
     color: var(--text);
     background-color: transparent;
     cursor: pointer;
+}
+button.solid, button.outline {
+    border: none;
+    color: var(--white);
+    background-color: var(--accent);
+    cursor: pointer;
+    border-radius: 4px;
+    font-weight: var(--font-weight-heading);
+    font-size: var(--font-size-body);
+    padding: 6px 12px;
+}
+button.outline {
+    color: var(--accent);
+    background-color: var(--background);
+    border: 1px solid var(--accent);
 }
 
 @media screen and (max-width: 350px) {

@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using soft20181_starter.Models;
@@ -10,6 +11,7 @@ namespace soft20181_starter.Pages.Events;
 public class Edit : PageModel
 {
     public readonly EventAppDbContext Db;
+    private readonly UserManager<User> _userManager;
 
 
     [BindProperty(SupportsGet = true)]
@@ -20,17 +22,30 @@ public class Edit : PageModel
     
     public bool IsAdmin => User.IsInRole("Admin");
     public bool IsNew => TheEvent?.Id == "N/A";
+    public bool IsEmailConfirmed = false;
     
     // [BindProperty]
     public string EventHostUsername { get; set; }
 
-    public Edit(EventAppDbContext db)
+    public Edit(EventAppDbContext db, UserManager<User> userManager)
     {
         this.Db = db;
+        _userManager = userManager;
     }
     
-    public IActionResult OnGet()
+    public async Task<IActionResult> OnGetAsync()
     {
+        string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "";
+        User? currentUser = Db.Users.FirstOrDefault(u => u.Id == currentUserId);
+        if (currentUser == null) return RedirectToPage("/Account/Manage/Index", new {area = "Identity"});
+        
+        // Check if the user has confirmed their email
+        IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(currentUser);
+        if (!IsEmailConfirmed)
+        {
+            TempData["BannerMessage"] = "You must confirm your email before you can create or edit an event.";
+            return RedirectToPage("/Account/Manage/Index", new {area = "Identity"});
+        }
         
         // Making a new event
         if (string.IsNullOrEmpty(Id))
@@ -38,7 +53,7 @@ public class Edit : PageModel
             TheEvent = new Event
             {
                 Id = "N/A", // ONPOST will check if the ID is "" and create a new GUID
-                HostId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                HostId = currentUserId
             };
             return Page();
         }

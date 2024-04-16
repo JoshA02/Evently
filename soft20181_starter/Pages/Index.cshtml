@@ -8,7 +8,7 @@
 @section Styles {
   <link rel="stylesheet" href="~/css/index.css" />
   <link rel="stylesheet" href="~/css/events/list.css" />
-  <link rel="stylesheet" href="~/css/events/event.css" />
+    <link rel="stylesheet" href="~/css/events/event.css" />
 }
 
 <h1>The ultimate platform for finding all sorts of events</h1>
@@ -17,34 +17,7 @@
   <h2>Upcoming Events</h2>
   <div class="event-list">
     @foreach (var e in Model.LatestEvents) {
-      <div class="event" id=@e.Id>
-        <div class="event-image-container">
-          <img src="@(e.ImageUrl.Length == 0 ? "./assets/event-image-default.png" : e.ImageUrl)" alt="Event image"/>
-        </div>
-        <div class="event-info">
-          <h3>@e.Name</h3>
-          
-          @* Host *@
-          <div class="event-detail-container">
-            <span class="material-symbols-outlined">domain</span>
-            <p class="event-detail">
-              @{User? host = Model.db.Users.FirstOrDefault(user => user.Id == e.HostId); }
-              @(host?.UserName ?? "")
-            </p>
-          </div>
-          
-          @* Date *@
-          <div class="event-detail-container">
-            <span class="material-symbols-outlined">event</span>
-            <p class="event-detail">@e.DateTime.ToLongDateString() - @e.DateTime.ToShortTimeString()</p>
-          </div>
-          
-          @* Price *@
-          <div class="event-price-container">
-            <p class="event-detail">£0.00</p>
-          </div>
-        </div>
-      </div>
+      <partial name="Events/_Event" model="e"/>
     }
   </div>
 </div>
@@ -53,34 +26,7 @@
   <h2>Cheapest Events</h2>
   <div class="event-list">
     @foreach (var e in Model.CheapestEvents) {
-      <div class="event" id=@e.Id>
-        <div class="event-image-container">
-          <img src="@(e.ImageUrl.Length == 0 ? "./assets/event-image-default.png" : e.ImageUrl)" alt="Event image"/>
-        </div>
-        <div class="event-info">
-          <h3>@e.Name</h3>
-          
-          @* Host *@
-          <div class="event-detail-container">
-            <span class="material-symbols-outlined">domain</span>
-            <p class="event-detail">
-              @{User? host = Model.db.Users.FirstOrDefault(user => user.Id == e.HostId); }
-              @(host?.UserName ?? "")
-            </p>
-          </div>
-          
-          @* Date *@
-          <div class="event-detail-container">
-            <span class="material-symbols-outlined">event</span>
-            <p class="event-detail">@e.DateTime.ToLongDateString() - @e.DateTime.ToShortTimeString()</p>
-          </div>
-          
-          @* Price *@
-          <div class="event-price-container">
-            <p class="event-detail">£0.00</p>
-          </div>
-        </div>
-      </div>
+      <partial name="Events/_Event" model="e"/>
     }
   </div>
 </div>
