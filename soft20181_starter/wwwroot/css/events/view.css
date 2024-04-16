@@ -200,6 +200,43 @@
     justify-content: space-between;
 }
 
+.send-container {
+    display: flex;
+    justify-content: flex-end;
+}
+.send-button {
+    display: flex;
+    align-items: center;
+    border: none;
+    background-color: transparent;
+    font-size: var(--font-size-subheading);
+    color: var(--accent);
+    font-weight: bolder;
+    cursor: pointer;
+    padding: 0;
+}
+
+.review-container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 28px;
+}
+.review-container .send-button {
+    margin-top: 12px;
+}
+.review-container textarea {
+    min-height: 100px;
+}
+.review {
+    overflow-wrap: anywhere;
+}
+.review-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
 
 @media screen and (max-width: 1800px) {
     .main-container {

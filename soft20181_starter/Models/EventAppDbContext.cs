@@ -14,6 +14,7 @@ namespace soft20181_starter.Models
         public DbSet<Event> Events { get; set; }
         
         public DbSet<EventBooking> Bookings { get; set; }
+        public DbSet<EventReview> Reviews { get; set; }
     }
 
 }

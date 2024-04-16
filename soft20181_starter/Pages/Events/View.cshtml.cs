@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -16,16 +17,41 @@ public class View : PageModel
     [BindProperty(SupportsGet = true)]
     public FormInput Input { get; set; }
     
+    [BindProperty]
+    [StringLength(1500, ErrorMessage = "Message must be less than 1500 characters.")]
+    public string ReviewMessage { get; set; }
+    
+    public List<ReviewWithUsername> Reviews { get; set; } = new List<ReviewWithUsername>();
+    
     const int SUGGESTED_EVENT_COUNT = 4;
     
     public List<EventWithHost> SuggestedEvents { get; set; }
     
     public readonly EventAppDbContext Db;
+    public readonly UserManager<User> UserManager;
     
-    public View(EventAppDbContext db)
+    public View(EventAppDbContext db, UserManager<User> userManager)
     {
         this.Db = db;
+        this.UserManager = userManager;
     }
+    
+    private void FetchReviews()
+    {
+        var _Reviews = Db.Reviews.Where(r => r.HostId == Event.Id).ToList();
+        foreach (var _review in _Reviews)
+        {
+            User? user = Db.Users.Find(_review.UserId);
+            if (user == null) continue;
+            ReviewWithUsername review = new ReviewWithUsername
+            {
+                Review = _review,
+                Username = user.UserName ?? "Unknown"
+            };
+            Reviews.Add(review); 
+        }
+    }
+    
     public IActionResult OnGet()
     {
         // Get the id from the URL:
@@ -108,6 +134,8 @@ public class View : PageModel
 
         // Get suggested events - END
         
+        FetchReviews();
+        
         return Page();
     }
     
@@ -151,6 +179,101 @@ public class View : PageModel
             return RedirectToPage("/Events/Index");
         }
     }
+    
+    public async Task<IActionResult> OnPostReviewAsync() {
+        // Get the id from the URL:
+        string? id = RouteData.Values["id"]?.ToString() ?? null;
+        if (id == null) return RedirectToPage("/Events/Index");
+        
+        // Grab the event from the database
+        Event? temp = Db.Events.FirstOrDefault(e => e.Id == id);
+        if (temp != null) Event = temp;
+        else return NotFound("Event not found");
+
+        try
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            
+            // Get the user:
+            User? user = await Db.Users.FindAsync(userId);
+            if (user == null) return RedirectToPage("/Events/Index");
+            
+            // Check their email is confirmed
+            if (!await UserManager.IsEmailConfirmedAsync(user))
+            {
+                TempData["BannerMessage"] = "You must verify your email before submitting a review.";
+                return RedirectToPage("/Events/View", new {id = Event.Id});
+            }
+            
+
+            // Create a new review.
+            var review = new EventReview
+            {
+                UserId = userId,
+                HostId = Event.Id,
+                Message = ReviewMessage
+            };
+
+            // Add the review to the database
+            Db.Reviews.Add(review);
+            
+            await Db.SaveChangesAsync();
+            TempData["BannerMessage"] = "Review submitted successfully!";
+            return RedirectToPage("/Events/View", new {id = Event.Id});
+        } catch (Exception e)
+        {
+            Console.WriteLine("Review error: " + e);
+            TempData["BannerMessage"] = "An error occurred while submitting your review.";
+            return RedirectToPage("/Events/Index");
+        }
+    }
+
+    public async Task<IActionResult> OnPostDeleteReviewAsync(int reviewId)
+    {
+        // Get the id from the URL:
+        string? id = RouteData.Values["id"]?.ToString() ?? null;
+        if (id == null) return RedirectToPage("/Events/Index");
+        
+        // Grab the event from the database
+        Event? temp = Db.Events.FirstOrDefault(e => e.Id == id);
+        if (temp != null) Event = temp;
+        else return NotFound("Event not found");
+
+        try
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            
+            // Get the user:
+            User? user = await Db.Users.FindAsync(userId);
+            if (user == null) return RedirectToPage("/Events/Index");
+            
+            // Check their email is confirmed
+            if (!await UserManager.IsEmailConfirmedAsync(user))
+            {
+                TempData["BannerMessage"] = "You must verify your email before deleting a review.";
+                return RedirectToPage("/Events/View", new {id = Event.Id});
+            }
+            
+            // Find the review
+            EventReview? review = await Db.Reviews.FindAsync(reviewId);
+            if (review == null) return RedirectToPage("/Events/View", new {id = Event.Id});
+            
+            // Check the user is the author of the review, or an admin
+            if (review.UserId != userId && !await UserManager.IsInRoleAsync(user, "Admin")) return RedirectToPage("/Events/View", new {id = Event.Id});
+            
+            // Remove the review
+            Db.Reviews.Remove(review);
+            
+            await Db.SaveChangesAsync();
+            TempData["BannerMessage"] = "Review deleted successfully!";
+            return RedirectToPage("/Events/View", new {id = Event.Id});
+        } catch (Exception e)
+        {
+            Console.WriteLine("Review error: " + e);
+            TempData["BannerMessage"] = "An error occurred while deleting your review.";
+            return RedirectToPage("/Events/Index");
+        }
+    }
 }
 
 public class FormInput
@@ -161,4 +284,10 @@ public class FormInput
     public string Phone { get; set; }
     public int TicketCount { get; set; }
     public string EventId { get; set; }
+}
+
+public class ReviewWithUsername
+{
+    public EventReview Review { get; set; }
+    public string Username { get; set; }
 }

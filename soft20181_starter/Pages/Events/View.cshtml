@@ -17,6 +17,7 @@
   if (Model.Event.Capacity > 0) occupancy = System.Math.Round(seatsFilled / seatsTotal, 2) * 100.0f + "%";
 
   User currentUser = await UserManager.GetUserAsync(User) ?? new User();
+  bool isAdmin = await UserManager.IsInRoleAsync(currentUser, "Admin");
 }
 
 @section Styles {
@@ -132,39 +133,45 @@
     <span class="navigate-button material-symbols-outlined" id="next">chevron_right</span>
   </section>
 </section>
+
+
+<div class="review-container">
+  <h2 style="margin-bottom: 0">Reviews</h2>
+  <h3>Leave a review of this host</h3>
+  <form method="post" asp-page-handler="Review">
+    <div class="form-input">
+      <span asp-validation-for="ReviewMessage" class="validation"></span>
+      <textarea type="text" asp-for="ReviewMessage" placeholder="Start typing here..." required></textarea>
+    </div>
+    <section class="send-container">
+      <button class="send-button">SEND REVIEW <span class="material-symbols-outlined">chevron_right</span></button>
+    </section>
+  </form>
+  
+  @foreach(var review in Model.Reviews) {
+    <div class="review">
+      <div class="review-header">
+        <h3>@review.Username</h3>
+        @if (currentUser.Id == review.Review.UserId || isAdmin)
+        {
+          <form asp-page-handler="DeleteReview">
+            <input type="hidden" name="reviewId" value="@review.Review.Id"/>
+            <button type="submit" class="material-symbols-outlined hidden">delete</button>
+          </form> 
+        }
+      </div>
+        <p>@review.Review.Message</p>
+      </div>
+  }
+  
+  <div class="divider faded"></div>
+</div>
+
 <h2 class="event-list-title">More Events</h2>
 <h3>Based on your existing bookings and latest events</h3>
 <div class="event-list">
   @foreach (var e in Model.SuggestedEvents) {
     <partial name="Events/_Event" model="e"/>
-    @* <div class="event" id=@e.Id> *@
-    @*   <div class="event-image-container"> *@
-    @*     <img src="@(e.ImageUrl.Length == 0 ? "./assets/event-image-default.png" : e.ImageUrl)" alt="Event image"/> *@
-    @*   </div> *@
-    @*   <div class="event-info"> *@
-    @*     <h3>@e.Name</h3> *@
-    @*      *@
-    @*     $1$ Host #1# *@
-    @*     <div class="event-detail-container"> *@
-    @*       <span class="material-symbols-outlined">domain</span> *@
-    @*       <p class="event-detail"> *@
-    @*         @{User? host = Model.Db.Users.FirstOrDefault(user => user.Id == e.HostId); } *@
-    @*         @(host?.UserName ?? "") *@
-    @*       </p> *@
-    @*     </div> *@
-    @*      *@
-    @*     $1$ Date #1# *@
-    @*     <div class="event-detail-container"> *@
-    @*       <span class="material-symbols-outlined">event</span> *@
-    @*       <p class="event-detail">@e.DateTime.ToLongDateString() - @e.DateTime.ToShortTimeString()</p> *@
-    @*     </div> *@
-    @*      *@
-    @*     $1$ Price #1# *@
-    @*     <div class="event-price-container"> *@
-    @*       <p class="event-detail">£0.00</p> *@
-    @*     </div> *@
-    @*   </div> *@
-    @* </div> *@
   }
 </div>
 
