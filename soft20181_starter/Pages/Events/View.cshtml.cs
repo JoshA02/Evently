@@ -38,7 +38,7 @@ public class View : PageModel
     
     private void FetchReviews()
     {
-        var _Reviews = Db.Reviews.Where(r => r.HostId == Event.Id).ToList();
+        var _Reviews = Db.Reviews.Where(r => r.HostId == Event.HostId).ToList();
         foreach (var _review in _Reviews)
         {
             User? user = Db.Users.Find(_review.UserId);
@@ -210,7 +210,7 @@ public class View : PageModel
             var review = new EventReview
             {
                 UserId = userId,
-                HostId = Event.Id,
+                HostId = Event.HostId,
                 Message = ReviewMessage
             };
 
