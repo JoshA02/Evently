@@ -38,25 +38,25 @@ public class Index : PageModel
         }
         
         // Temp: Add 10 random events to the list:
-        for (int i = 0; i < 10; i++)
-        {
-            // If the db already has 10 events, don't add more:
-            if(Events.Count >= 10) break;
-            
-            DateTime ThreeToEightMonthsFromNow = DateTime.Now.AddMonths(new Random().Next(3, 8));
-            ThreeToEightMonthsFromNow = ThreeToEightMonthsFromNow.AddHours(new Random().Next(1, 24));
-            ThreeToEightMonthsFromNow = ThreeToEightMonthsFromNow.AddDays(new Random().Next(1, 30));
-            
-            Event newEvent = new Event
-            {
-                Id = Guid.NewGuid().ToString(),
-                Name = "New Event ",
-                DateTime = ThreeToEightMonthsFromNow,
-                HostId = userId
-            };
-            db.Events.Add(newEvent);
-        }
-        db.SaveChanges();
+        // for (int i = 0; i < 10; i++)
+        // {
+        //     // If the db already has 10 events, don't add more:
+        //     if(Events.Count >= 10) break;
+        //     
+        //     DateTime ThreeToEightMonthsFromNow = DateTime.Now.AddMonths(new Random().Next(3, 8));
+        //     ThreeToEightMonthsFromNow = ThreeToEightMonthsFromNow.AddHours(new Random().Next(1, 24));
+        //     ThreeToEightMonthsFromNow = ThreeToEightMonthsFromNow.AddDays(new Random().Next(1, 30));
+        //     
+        //     Event newEvent = new Event
+        //     {
+        //         Id = Guid.NewGuid().ToString(),
+        //         Name = "New Event ",
+        //         DateTime = ThreeToEightMonthsFromNow,
+        //         HostId = userId
+        //     };
+        //     db.Events.Add(newEvent);
+        // }
+        // db.SaveChanges();
         
     }
     
