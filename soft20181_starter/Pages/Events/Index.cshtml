@@ -23,41 +23,10 @@ else
   <h3 style="margin-top: 0;">Showing all upcoming events</h3>
 }
 
-@* <form><button class="btn" type="submit" id="make-test-events">Test Events (+100)</button></form> *@
-
-
 <div class="event-list">
   @foreach (var e in Model.Events)
   {
     <partial name="Events/_Event" model="e"/>
-    @* <div class="event" id=@e.Id> *@
-    @*   <div class="event-image-container"> *@
-    @*     <img src="@(e.ImageUrl.Length == 0 ? "./assets/event-image-default.png" : e.ImageUrl)" alt="Event image"/> *@
-    @*   </div> *@
-    @*   <div class="event-info"> *@
-    @*     <h3>@e.Name</h3> *@
-    @*      *@
-    @*     $1$ Host #1# *@
-    @*     <div class="event-detail-container"> *@
-    @*       <span class="material-symbols-outlined">domain</span> *@
-    @*       <p class="event-detail"> *@
-    @*         @{ User? host = Model.db.Users.FirstOrDefault(user => user.Id == e.HostId); } *@
-    @*         @(host?.UserName ?? "") *@
-    @*       </p> *@
-    @*     </div> *@
-    @*      *@
-    @*     $1$ Date #1# *@
-    @*     <div class="event-detail-container"> *@
-    @*       <span class="material-symbols-outlined">event</span> *@
-    @*       <p class="event-detail">@e.DateTime.ToLongDateString() - @e.DateTime.ToShortTimeString()</p> *@
-    @*     </div> *@
-    @*      *@
-    @*     $1$ Price #1# *@
-    @*     <div class="event-price-container"> *@
-    @*       <p class="event-detail">£0.00</p> *@
-    @*     </div> *@
-    @*   </div> *@
-    @* </div> *@
   }
 </div>
 
