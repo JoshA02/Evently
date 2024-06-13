@@ -1,3 +1,14 @@
 *.DS_Store
 .idea/
+.vs/
 */obj/
+*/bin/
+/node_modules/
+package-lock.json
+*.sqlite-shm
+*.sqlite-wal
+*.sqlite
+*.cache
+*.log
+*/Migrations/
+*.js
