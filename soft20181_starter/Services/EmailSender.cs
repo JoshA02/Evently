@@ -23,6 +23,7 @@ public class EmailSender : IEmailSender
     public async Task SendEmailAsync(string toEmail, string subject, string message)
     {
         if (string.IsNullOrEmpty(Options.PostmarkToken)) throw new Exception("Null PostmarkToken");
+        if (string.IsNullOrEmpty(Options.PostmarkFromEmail)) throw new Exception("Null PostmarkFromEmail");
         
         await Execute(Options.PostmarkToken, subject, message, toEmail);
     }
@@ -31,7 +32,7 @@ public class EmailSender : IEmailSender
     {
         var msg = new PostmarkMessage()
         {
-            From = "",
+            From = Options.PostmarkFromEmail,
             To = toEmail,
             TrackOpens = false,
             Subject = subject,
