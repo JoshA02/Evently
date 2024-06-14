@@ -1,0 +1,33 @@
+@page
+@using evently.Models
+@using Microsoft.AspNetCore.Identity
+@model evently.Pages.Events.Index
+
+@{
+  ViewData["Title"] = "Events";
+}
+
+@section Styles {
+  <link rel="stylesheet" href="~/css/events/list.css" />
+  <link rel="stylesheet" href="~/css/events/event.css" />
+}
+
+@if (Model.query.Length > 0)
+{
+  <h1 style="margin-bottom: 0.1em;" id="title">Search results for @Model.query</h1>
+  <h3 style="margin-top: 0;">Showing all results matching '@Model.query'</h3>
+}
+else
+{
+  <h1 style="margin-bottom: 0.1em;" id="title">Events</h1>
+  <h3 style="margin-top: 0;">Showing all upcoming events</h3>
+}
+
+<div class="event-list">
+  @foreach (var e in Model.Events)
+  {
+    <partial name="Events/_Event" model="e"/>
+  }
+</div>
+
+<div class="bottom-fade"></div>

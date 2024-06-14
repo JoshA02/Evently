@@ -1,0 +1,30 @@
+@using evently.Models
+@model EventWithHost
+
+<div class="event" id=@Model.Event.Id>
+  <div class="event-image-container">
+    <img src="@(Model.Event.ImageUrl.Length == 0 ? "./assets/event-image-default.png" : Model.Event.ImageUrl)" alt="Event image"/>
+  </div>
+  <div class="event-info">
+    <h3>@Model.Event.Name</h3>
+          
+    @* Host *@
+    <div class="event-detail-container">
+      <span class="material-symbols-outlined">domain</span>
+      <p class="event-detail">
+        @(Model.Host?.UserName ?? "")
+      </p>
+    </div>
+          
+    @* Date *@
+    <div class="event-detail-container">
+      <span class="material-symbols-outlined">event</span>
+      <p class="event-detail">@Model.Event.DateTime.ToLongDateString() - @Model.Event.DateTime.ToShortTimeString()</p>
+    </div>
+          
+    @* Price *@
+    <div class="event-price-container">
+      <p class="event-detail">£@($"{Model.Event.Price:N2}")</p>
+    </div>
+  </div>
+</div>

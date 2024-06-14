@@ -1,0 +1,95 @@
+@page
+@using Microsoft.AspNetCore.Identity
+@using evently.Models
+@using System.Security.Claims
+@model evently.Pages.Admin.Index
+
+@inject UserManager<User> UserManager;
+
+@{
+  ViewData["Title"] = "Admin Panel";
+}
+
+@section Styles {
+  <link rel="stylesheet" href="~/css/admin/index.css" asp-append-version="true" />
+}
+
+<h1 style="margin-bottom: 0.1em">Admin page</h1>
+<h3 style="margin-top: 0">View general and per-event analytics</h3>
+
+<partial name="_EventList"/>
+<partial name="_UserList"/>
+<partial name="_ContactList"/>
+
+
+
+@* This script is responsible for updating the hidden inputs in the save-changes-form *@
+@* and enabling the save button when the user changes a property on a given user *@
+@section Scripts {
+  <script>
+    $(() => {      
+      
+      $("tr").each((i, tr) => {
+        // check if the tr has an id attribute
+        if (!$(tr).attr("id")) {
+          return;
+        }
+        
+        const saveChangesForm = $(tr).find("#save-changes-form");
+        const id = $(tr).attr("id");
+        const usernameInput = $(tr).find(".username-input");
+        const emailInput = $(tr).find(".email-input");
+        const roleSelector = $(tr).find(".role-selector");
+        
+        
+        usernameInput.val(usernameInput.attr("placeholder"));
+        usernameInput.on("input", (e) => {
+          saveChangesForm.find("input[name='username']").val($(e.target).val());
+          saveChangesForm.find("button").removeAttr("disabled");
+        });
+        
+        emailInput.val(emailInput.attr("placeholder"));
+        emailInput.on("input", (e) => {
+          saveChangesForm.find("input[name='email']").val($(e.target).val());
+          saveChangesForm.find("button").removeAttr("disabled");
+        });
+        
+        roleSelector.on("change", (e) => {
+          saveChangesForm.find("input[name='role']").val($(e.target).val());
+          saveChangesForm.find("button").removeAttr("disabled");
+        });
+      });
+      
+      $(".open-contact-button").on("click", (e) => {
+        const name = $(e.target).attr("name");
+        const email = $(e.target).attr("email");
+        const phone = $(e.target).attr("phone");
+        const event = $(e.target).attr("event");
+        const host = $(e.target).attr("host");
+        const message = $(e.target).attr("message");
+        openMessagePopup(name, email, phone, event, host, message);
+      });
+      
+      $(".close-popup").on("click", (e) => {
+        $(".popup").fadeOut(200);
+      });
+      
+      console.log("Admin page scripts loaded");
+      function openMessagePopup(name, email, phone, event, host, message) {
+        $(".popup .icon-container span:nth-child(1)").html(`<span class="material-symbols-outlined">person</span> ${name || "N/A"}`);
+        $(".popup .icon-container span:nth-child(2)").html(`<span class="material-symbols-outlined">email</span> ${email || "N/A"}`);
+        $(".popup .icon-container span:nth-child(3)").html(`<span class="material-symbols-outlined">phone</span> ${phone || "N/A"}`);
+        $(".popup .icon-container span:nth-child(4)").html(`<span class="material-symbols-outlined">event</span> ${event || "N/A"}`);
+        $(".popup .icon-container span:nth-child(5)").html(`<span class="material-symbols-outlined">corporate_fare</span> ${host || "N/A"}`);
+        
+        $(".popup .message").val(message || "Cannot find message. Please try again.");
+        
+        const popup = $(".popup");
+        $(popup).css("display", "flex");
+        $(popup).hide().fadeIn(200);
+        
+      }
+      
+    });
+  </script>
+}

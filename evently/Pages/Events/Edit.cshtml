@@ -1,0 +1,88 @@
+@page "{id:maxLength(36)?}"
+@model evently.Pages.Events.Edit
+
+@{
+  @if (Model.IsNew)
+  {
+    ViewData["Title"] = "Create Event";
+  }
+  else
+  {
+    ViewData["Title"] = "Edit Event";
+  }
+}
+
+@section Styles
+{
+  <link rel="stylesheet" href="~/css/account.css" />
+}
+
+<h1>@(Model.IsNew ? "Create Event" : "Edit Event")</h1>
+@if (!Model.IsNew)
+{
+  <h3>@Model.TheEvent.Name</h3> 
+}
+
+<div class="divider"></div>
+
+<form method="post">
+  <div class="form-input">
+    <label for="event-id">Id / Reference Number <span style="font-size: 12px; color: var(--urgent)" class="material-symbols-outlined">lock</span></label>
+    <input type="text" id="event-id" name="TheEvent.Id" value="@Model.TheEvent.Id" readonly>
+  </div>
+  <div class="form-input">
+    @if (!Model.IsAdmin || !Model.IsNew)
+    {
+      <label for="host-id">Host Id
+        <span style="font-size: 12px; color: var(--urgent)" class="material-symbols-outlined">lock</span>
+      </label>
+      <input type="text" id="host-id" asp-for="@Model.TheEvent.HostId" readonly>
+    }
+    else
+    {
+      <label for="host-id">Host Id</label>
+      <input type="text" id="host-id" asp-for="@Model.TheEvent.HostId">
+    }
+  </div>
+  <div class="form-input">
+    <label for="name">Name</label>
+    <input type="text" id="name" asp-for="@Model.TheEvent.Name" required>
+  </div>
+  <div class="form-input">
+    <label for="description">Description</label>
+    <input type="text" id="description" asp-for="@Model.TheEvent.Description" required>
+  </div>
+  <div class="form-input">
+    <label for="image-url">Image URL</label>
+    <input type="text" id="image-url" asp-for="@Model.TheEvent.ImageUrl" required>
+  </div>
+  <div class="form-input">
+    <label for="video-url">Video URL</label>
+    <input type="text" id="video-url" asp-for="@Model.TheEvent.VideoUrl">
+  </div>
+  <div class="form-input">
+    <label for="location">Location</label>
+    <input type="text" id="location" asp-for="@Model.TheEvent.Location" required>
+  </div>
+  <div class="form-input">
+    <label for="date-time">Date and Time</label>
+    <input type="datetime-local" id="date-time" asp-for="@Model.TheEvent.DateTime" required>
+  </div>
+  <div class="form-input">
+    <label for="capacity">Capacity</label>
+    <input type="number" id="capacity" min="@Model.TheEvent.Registered" asp-for="@Model.TheEvent.Capacity" required>
+  </div>
+  <div class="form-input">
+    <label for="registered">Registered <span style="font-size: 12px; color: var(--urgent)" class="material-symbols-outlined">lock</span></label>
+    <input type="number" id="registered" asp-for="@Model.TheEvent.Registered" readonly>
+  </div>
+  <div class="form-input">
+    <label for="price">Price</label>
+    <input type="number" id="price" asp-for="@Model.TheEvent.Price" required>
+  </div>
+  
+  <div class="divider faded"></div>
+  <div class="right-align">
+    <button class="send-button" type="submit">SAVE <span class="material-symbols-outlined">chevron_right</span></button>
+  </div>
+</form>
