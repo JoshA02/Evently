@@ -38,6 +38,17 @@ This project is **not** production ready and could do with some optimisations (m
 
 
 <details open>
+<summary><h2>Screenshots</h2></summary>
+
+![Home Page](/screenshots/evently-home-page.png)
+![Event Page](/screenshots/evently-event-page.png)
+![Contact Us Page](/screenshots/evently-contact-us-page.png)
+![Admin Page](/screenshots/evently-admin-page.png)
+![Login Page](/screenshots/evently-login-page.png)
+</details>
+
+
+<details open>
 <summary><h2>Future Considerations</h2></summary>
 
 Due to time constraints during development, I decided to prioritise functionality over efficiency in some areas.<br>
