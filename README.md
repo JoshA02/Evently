@@ -39,12 +39,13 @@ This project is **not** production ready and could do with some optimisations (m
 
 <details open>
 <summary><h2>Screenshots</h2></summary>
-
-![Home Page](/screenshots/evently-home-page.png)
-![Event Page](/screenshots/evently-event-page.png)
-![Contact Us Page](/screenshots/evently-contact-us-page.png)
-![Admin Page](/screenshots/evently-admin-page.png)
-![Login Page](/screenshots/evently-login-page.png)
+    <div style="display: flex; justify-content: space-between;">
+        <img src="/screenshots/evently-home-page.png" alt="Home Page" style="width:32%">
+        <img src="/screenshots/evently-contact-us-page.png" alt="Contact Us Page" style="width:32%">
+        <img src="/screenshots/evently-login-page.png" alt="Login Page" style="width:32%">
+    </div>
+    <div style="display: flex; justify-content: space-between;"><img src="/screenshots/evently-admin-page.png" alt="Admin Page"></div>
+    <img src="/screenshots/evently-event-page.png" alt="Event Page" width="750">
 </details>
 
 
