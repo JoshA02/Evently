@@ -100,7 +100,11 @@ This functionality utilises PostMark. To configure PostMark for use within this 
     One way to do this is via the NuGet CLI:
     1. Navigate to the project directory (`cd Evently`)
     2. Run `nuget restore evently.sln`
-6. **Run the Application**:
+6. **Add EFC Migration and Update Database**:
+    The provided files do not include any prior database migrations. Due to this, you will need to add a new migration, before updating the database. To do this in *JetBrains Rider*:
+   1. Navigate to `Tools > Entity Framework Core > Add Migration`, set `DbContext class` to `EventAppDbContext`, and click `OK`.
+   2. Upon adding the migration, navigate to `Tools > Entity Framework Core > Update Database`, set `DbContext class` to `EventAppDbContext`, tick `Use the default connection of the startup project`, and click `OK`.
+7. **Run the Application**:
     - You can run the app using Rider/Visual Studio's run buttons (select the 'http' launch profile).
     - Alternatively, you can manually run the `dotnet run --launch-profile "http"` command and visit `http://localhost:5139` in a web browser.
 
